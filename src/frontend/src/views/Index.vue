@@ -6,15 +6,15 @@
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
 
-          <BuilderDoughSelector :doughs="doughs" @getDoughParams="setDough" />
+          <BuilderDoughSelector :dough="dough" @onChangeDough="setDough" />
 
-          <BuilderSizeSelector :data="sizes" @getSizeParams="setSize" />
+          <BuilderSizeSelector :sizes="sizes" @onChangeSizes="setSize" />
 
           <BuilderIngredientsSelector
-            :ingredients="ingredients"
             :sauces="sauces"
-            @getSauceParams="setSauce"
-            @getIngredientParams="setIngredient"
+            :ingredients="ingredients"
+            @onChangeSauce="setSauce"
+            @onChangeIngredient="setIngredient"
           />
 
           <div class="content__pizza">
@@ -28,10 +28,10 @@
               />
 
               <BuilderPizzaView
-                :dough="pizzaConstruct.dough.title"
-                :sauce="pizzaConstruct.sauce.title"
+                :dough="pizzaConstruct.dough.id"
+                :sauce="pizzaConstruct.sauce.id"
                 :ingredients="pizzaConstruct.ingredients"
-                @dropIngredientParams="dropIngredient"
+                @dropIngredient="setDroppedIngredient"
               />
 
               <BuilderPriceCounter
@@ -49,15 +49,13 @@
 
 <script>
 import miscData from "@/static/misc.json";
-import pizzaData from "@/static/pizza.json";
 import pizza from "@/static/pizza.json";
 import userData from "@/static/user.json";
 
 import {
-  normalizeData,
-  sizes,
-  doughs,
-  sauces,
+  normalizeDough,
+  normalizeSizes,
+  normalizeSauces,
   normalizeIngredients,
 } from "@/common/helpers.js";
 
@@ -81,26 +79,25 @@ export default {
   },
   data: () => ({
     miscData,
-    pizzaData,
     userData,
     pizza,
+    dough: normalizeDough(pizza.dough),
+    sizes: normalizeSizes(pizza.sizes),
+    sauces: normalizeSauces(pizza.sauces),
+    ingredients: normalizeIngredients(pizza.ingredients),
     pizzaConstruct: {
-      isValid: false,
       name: "",
       dough: {
-        id: "",
-        title: "",
-        price: 0,
+        id: 2,
+        price: 300,
       },
       size: {
-        id: "",
-        title: "",
-        quantity: 0,
+        id: 2,
+        multiplier: 2,
       },
       sauce: {
-        id: "",
-        title: "",
-        price: 0,
+        id: 2,
+        price: 50,
       },
       ingredients: [],
     },
@@ -117,31 +114,15 @@ export default {
         : false;
     },
 
-    doughs: function () {
-      return normalizeData(this.pizza.dough, doughs);
-    },
-
-    sizes: function () {
-      return normalizeData(this.pizza.sizes, sizes);
-    },
-
-    sauces: function () {
-      return normalizeData(this.pizza.sauces, sauces);
-    },
-
-    ingredients: function () {
-      return normalizeIngredients(this.pizza.ingredients);
-    },
-
     getIngredientsPrice() {
       return this.pizzaConstruct.ingredients.reduce((acc, item) => {
-        return acc + item.price * item.quantity;
+        return acc + item.price * item.count;
       }, 0);
     },
 
     getTotalPrice() {
       return (
-        this.pizzaConstruct.size.quantity *
+        this.pizzaConstruct.size.multiplier *
         (this.pizzaConstruct.dough.price +
           this.pizzaConstruct.sauce.price +
           this.getIngredientsPrice)
@@ -149,66 +130,62 @@ export default {
     },
   },
   methods: {
-    setDough(params) {
-      this.pizzaConstruct.dough.id = params.id;
-      this.pizzaConstruct.dough.title = params.title;
-      this.pizzaConstruct.dough.price = params.value;
+    setDough(data) {
+      this.pizzaConstruct.dough.id = data.id;
+      this.pizzaConstruct.dough.price = data.price;
     },
 
-    setSize(params) {
-      this.pizzaConstruct.size.id = params.id;
-      this.pizzaConstruct.size.title = params.title;
-      this.pizzaConstruct.size.quantity = params.value;
+    setSize(data) {
+      this.pizzaConstruct.size.id = data.id;
+      this.pizzaConstruct.size.multiplier = data.multiplier;
     },
 
-    setSauce(params) {
-      this.pizzaConstruct.sauce.id = params.id;
-      this.pizzaConstruct.sauce.title = params.title;
-      this.pizzaConstruct.sauce.price = params.value;
+    setSauce(data) {
+      this.pizzaConstruct.sauce.id = data.id;
+      this.pizzaConstruct.sauce.price = data.price;
     },
 
-    setIngredient(params) {
-      const ingredient = this.getIngredientById(params.id);
+    setIngredient(data) {
+      const ingredient = this.getIngredientById(
+        this.pizzaConstruct.ingredients,
+        data.id
+      );
 
-      this.draggableIngredient(params);
+      this.getIngredientById(this.ingredients, data.id).count = data.count;
 
       if (ingredient) {
-        params.quantity === 0 ? this.deleteIngredientById(params.id) : "";
-        ingredient.quantity = params.quantity;
-        ingredient.price = params.price;
+        data.count === 0
+          ? this.deleteIngredientById(this.pizzaConstruct.ingredients, data.id)
+          : "";
+        ingredient.count = data.count;
         return;
       }
 
       this.pizzaConstruct.ingredients.push({
-        ingredientId: params.id,
-        name: params.name,
-        quantity: 1,
-        price: params.price,
+        id: data.id,
+        value: data.value,
+        price: data.price,
+        count: data.count,
       });
     },
 
-    deleteIngredientById(id) {
-      this.pizzaConstruct.ingredients.find(function (item, index, array) {
-        item.ingredientId === id ? array.splice(index, 1) : "";
+    setDroppedIngredient(data) {
+      this.setIngredient(data);
+      this.getIngredientById(
+        this.pizzaConstruct.ingredients,
+        data.id
+      ).count += 1;
+      this.getIngredientById(this.ingredients, data.id).count += 1;
+    },
+
+    getIngredientById(array, id) {
+      return array.find((item) => item.id == id);
+    },
+
+    deleteIngredientById(array, id) {
+      array.find(function (item, index, array) {
+        item.id === id ? array.splice(index, 1) : "";
       });
-    },
-
-    getIngredientById(id) {
-      return this.pizzaConstruct.ingredients.find(
-        (item) => item.ingredientId == id
-      );
-    },
-
-    draggableIngredient(params) {
-      let elementDrag = document.querySelector(`.${params.name} [draggable]`);
-      elementDrag.setAttribute("draggable", params.quantity <= 2);
-    },
-
-    dropIngredient(params) {
-      let elemPlusButton = document.querySelector(
-        `.${params.name} .counter__button--plus`
-      );
-      elemPlusButton.dispatchEvent(new Event("click"));
     },
 
     addToCart(price) {

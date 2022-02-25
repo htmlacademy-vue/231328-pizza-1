@@ -4,8 +4,9 @@
       type="radio"
       :name="name"
       :value="value"
+      :checked="checked"
       class="visually-hidden"
-      @change="getParams"
+      @change="$emit('onChange')"
     />
     <b v-if="name === 'dough'">{{ title }}</b>
     <span>
@@ -19,10 +20,6 @@
 export default {
   name: "SelectorItem",
   props: {
-    id: {
-      type: Number,
-      required: false,
-    },
     title: {
       type: String,
       required: true,
@@ -39,15 +36,9 @@ export default {
       type: [String, Number],
       required: true,
     },
-  },
-  methods: {
-    getParams() {
-      this.$emit("getParams", {
-        id: this.id,
-        title: this.title,
-        name: this.name,
-        value: this.value,
-      });
+    checked: {
+      type: Boolean,
+      required: false,
     },
   },
 };

@@ -1,6 +1,12 @@
 <template>
   <label class="radio">
-    <input type="radio" :name="name" :value="value" @change="getParams" />
+    <input
+      type="radio"
+      :name="name"
+      :value="value"
+      :checked="checked"
+      @change="$emit('onChange')"
+    />
     <span>{{ title }}</span>
   </label>
 </template>
@@ -9,10 +15,6 @@
 export default {
   name: "RadioButton",
   props: {
-    id: {
-      type: Number,
-      required: false,
-    },
     title: {
       type: String,
       required: true,
@@ -25,15 +27,9 @@ export default {
       type: [String, Number],
       required: true,
     },
-  },
-  methods: {
-    getParams() {
-      this.$emit("getParams", {
-        id: this.id,
-        title: this.title,
-        name: this.name,
-        value: this.value,
-      });
+    checked: {
+      type: Boolean,
+      required: false,
     },
   },
 };

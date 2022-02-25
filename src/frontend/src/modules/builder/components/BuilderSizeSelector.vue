@@ -4,15 +4,17 @@
       <template #title>Выберите тесто</template>
       <template #content>
         <SelectorItem
-          v-for="item of data"
+          v-for="item of sizes"
           :key="item.id"
           :title="item.name"
-          :name="'diameter'"
-          :value="item.multiplier"
-          :id="item.id"
+          name="diameter"
+          :value="item.value"
+          :checked="item.checked"
           class="diameter__input"
           :class="`diameter__input--${item.value}`"
-          @getParams="getSizeParams"
+          @onChange="
+            $emit('onChangeSizes', { id: item.id, multiplier: item.multiplier })
+          "
         />
       </template>
     </SheetCard>
@@ -20,8 +22,8 @@
 </template>
 
 <script>
-import SelectorItem from "@/common/components/SelectorItem";
 import SheetCard from "@/common/components/SheetCard";
+import SelectorItem from "@/common/components/SelectorItem";
 
 export default {
   name: "BuilderSizeSelector",
@@ -30,14 +32,9 @@ export default {
     SelectorItem,
   },
   props: {
-    data: {
+    sizes: {
       type: Array,
       requred: true,
-    },
-  },
-  methods: {
-    getSizeParams(params) {
-      this.$emit("getSizeParams", params);
     },
   },
 };

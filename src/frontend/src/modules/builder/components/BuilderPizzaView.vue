@@ -1,15 +1,15 @@
 <template>
   <div class="content__constructor">
-    <AppDrop @drop="onDrop">
+    <AppDrop @drop="$emit('dropIngredient', $event)">
       <div class="pizza" :class="pizzaFoundationClass">
         <div class="pizza__wrapper">
           <div
             v-for="item in ingredients"
-            :key="item.ingredientId + 1"
+            :key="item.id"
             class="pizza__filling"
             :class="[
-              getClassByIngredient(item.name),
-              getClassByQuantity(item.quantity),
+              getClassByIngredient(item.value),
+              getClassByCount(item.count),
             ]"
           ></div>
         </div>
@@ -20,7 +20,6 @@
 
 <script>
 import AppDrop from "@/common/components/AppDrop.vue";
-// import EventBus from "@/common/EventBus";
 
 export default {
   name: "BuilderPizzaView",
@@ -43,30 +42,24 @@ export default {
   },
   computed: {
     pizzaFoundationClass() {
-      return `pizza--foundation--${this.dough == "Тонкое" ? "small" : "big"}-${
-        this.sauce == "Томатный" ? "tomato" : "creamy"
+      return `pizza--foundation--${this.dough == 1 ? "small" : "big"}-${
+        this.sauce == 1 ? "tomato" : "creamy"
       }`;
     },
   },
   methods: {
-    getClassByIngredient(name) {
-      return `pizza__filling--${name}`;
+    getClassByIngredient(value) {
+      return `pizza__filling--${value}`;
     },
 
-    getClassByQuantity(quantity) {
-      let quantityClass = "";
-
-      if (quantity == 2) {
-        quantityClass = "pizza__filling--second";
-      } else if (quantity == 3) {
-        quantityClass = "pizza__filling--third";
+    getClassByCount(count) {
+      let countClass = "";
+      if (count === 2) {
+        countClass = "pizza__filling--second";
+      } else if (count === 3) {
+        countClass = "pizza__filling--third";
       }
-
-      return quantityClass;
-    },
-
-    onDrop(data) {
-      this.$emit("dropIngredientParams", data);
+      return countClass;
     },
   },
 };

@@ -8,12 +8,14 @@
           <RadioButton
             v-for="item of sauces"
             :key="item.id"
-            :name="'sauce'"
             :title="item.name"
+            name="sauce"
             :value="item.price"
-            :id="item.id"
+            :checked="item.checked"
             class="ingredients__input"
-            @getParams="getSauceParams"
+            @onChange="
+              $emit('onChangeSauce', { id: item.id, price: item.price })
+            "
           />
         </div>
 
@@ -25,27 +27,19 @@
               v-for="item of ingredients"
               :key="item.id"
               class="ingredients__item"
-              :class="item.value"
             >
-              <AppDrag
-                :transfer-data="{
-                  id: item.id,
-                  name: item.value,
-                  quantity: 1,
-                  price: item.price,
-                }"
-              >
+              <AppDrag :transfer-data="item" :draggable="item.count < 3">
                 <span class="filling" :class="`filling--${item.value}`">
                   {{ item.name }}
                 </span>
               </AppDrag>
               <ItemCounter
-                :id="item.id"
                 :name="item.value"
-                :price="item.price"
-                :value="item.count"
+                :count="item.count"
                 class="ingredients__counter"
-                @getParams="getIngredientParams"
+                @onChange="
+                  $emit('onChangeIngredient', { ...item, count: $event })
+                "
               />
             </li>
           </ul>
@@ -77,20 +71,6 @@ export default {
     ingredients: {
       type: Array,
       requred: true,
-    },
-  },
-  methods: {
-    getSauceParams(params) {
-      this.$emit("getSauceParams", params);
-    },
-
-    getIngredientParams(params) {
-      this.isDraggable = params.quantity > 2 ? false : true;
-      this.$emit("getIngredientParams", params);
-    },
-
-    isDraggable(count) {
-      return count <= 2;
     },
   },
 };

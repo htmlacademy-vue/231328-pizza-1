@@ -3,23 +3,23 @@
     <button
       type="button"
       class="counter__button counter__button--minus"
-      @click="value -= 1"
-      :disabled="value < 1"
+      @click="clickCounterHandler('-')"
+      :disabled="count < 1"
     >
       <span class="visually-hidden">Меньше</span>
     </button>
     <input
       type="text"
       :name="['counter_' + name]"
-      :value="value"
+      :value="count"
       class="counter__input"
       disabled
     />
     <button
       type="button"
       class="counter__button counter__button--plus"
-      @click="value += 1"
-      :disabled="value >= 3"
+      @click="clickCounterHandler('+')"
+      :disabled="count >= 3"
     >
       <span class="visually-hidden">Больше</span>
     </button>
@@ -30,30 +30,19 @@
 export default {
   name: "ItemCounter",
   props: {
-    id: {
-      type: Number,
-      required: true,
-    },
     name: {
       type: String,
       reuired: true,
     },
-    price: {
+    count: {
       type: Number,
-      required: true,
+      reuired: false,
     },
   },
-  data: () => ({
-    value: 0,
-  }),
-  watch: {
-    value: function () {
-      this.$emit("getParams", {
-        id: this.id,
-        name: this.name,
-        quantity: this.value,
-        price: this.price,
-      });
+  methods: {
+    clickCounterHandler(symbol) {
+      symbol === "+" ? (this.count += 1) : (this.count -= 1);
+      this.$emit("onChange", this.count);
     },
   },
 };
