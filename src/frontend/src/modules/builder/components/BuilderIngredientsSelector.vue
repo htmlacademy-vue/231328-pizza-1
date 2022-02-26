@@ -37,7 +37,7 @@
                 :name="item.value"
                 :count="item.count"
                 class="ingredients__counter"
-                @onChange="
+                @update:count="
                   $emit('onChangeIngredient', { ...item, count: $event })
                 "
               />

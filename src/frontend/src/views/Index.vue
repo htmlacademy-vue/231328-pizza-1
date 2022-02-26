@@ -6,6 +6,8 @@
         <div class="content__wrapper">
           <h1 class="title title--big">Конструктор пиццы</h1>
 
+          {{ pizzaConstruct }}
+
           <BuilderDoughSelector :dough="dough" @onChangeDough="setDough" />
 
           <BuilderSizeSelector :sizes="sizes" @onChangeSizes="setSize" />

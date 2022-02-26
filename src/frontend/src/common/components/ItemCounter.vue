@@ -3,7 +3,7 @@
     <button
       type="button"
       class="counter__button counter__button--minus"
-      @click="clickCounterHandler('-')"
+      @click="$emit('update:count', count - 1)"
       :disabled="count < 1"
     >
       <span class="visually-hidden">Меньше</span>
@@ -18,7 +18,7 @@
     <button
       type="button"
       class="counter__button counter__button--plus"
-      @click="clickCounterHandler('+')"
+      @click="$emit('update:count', count + 1)"
       :disabled="count >= 3"
     >
       <span class="visually-hidden">Больше</span>
@@ -37,12 +37,6 @@ export default {
     count: {
       type: Number,
       reuired: false,
-    },
-  },
-  methods: {
-    clickCounterHandler(symbol) {
-      symbol === "+" ? (this.count += 1) : (this.count -= 1);
-      this.$emit("onChange", this.count);
     },
   },
 };

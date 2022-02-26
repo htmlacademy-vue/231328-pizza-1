@@ -28,11 +28,11 @@ export default {
   },
   props: {
     dough: {
-      type: String,
+      type: Number,
       required: true,
     },
     sauce: {
-      type: String,
+      type: Number,
       required: true,
     },
     ingredients: {
