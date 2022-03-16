@@ -5,7 +5,7 @@
       type="button"
       class="button"
       :disabled="!isValid"
-      @click="$emit('addToCart', total)"
+      @click="emitMethod"
     >
       Готовьте!
     </button>
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import EventBus from "@/common/eventBus";
+
 export default {
   name: "BuilderPriceCounter",
   props: {
@@ -23,6 +25,11 @@ export default {
     isValid: {
       type: Boolean,
       required: true,
+    },
+  },
+  methods: {
+    emitMethod() {
+      EventBus.$emit("emitFromChild", this.total);
     },
   },
 };

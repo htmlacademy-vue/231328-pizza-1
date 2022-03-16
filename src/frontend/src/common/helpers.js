@@ -9,7 +9,12 @@ export const normalizeDough = (dough) => {
 export const normalizeSizes = (sizes) => {
   return sizes.map((item) => ({
     ...item,
-    value: item.image.split("/").pop().split(".", "1")[0],
+    value:
+      item.multiplier === 1
+        ? "small"
+        : item.multiplier === 2
+        ? "normal"
+        : "large",
     checked: item.name === "32 см",
   }));
 };

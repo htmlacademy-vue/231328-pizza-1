@@ -1,7 +1,7 @@
 <template>
   <div class="content__diameter">
     <SheetCard>
-      <template #title>Выберите тесто</template>
+      <template #title>Выберите размер</template>
       <template #content>
         <SelectorItem
           v-for="item of sizes"
@@ -22,13 +22,11 @@
 </template>
 
 <script>
-import SheetCard from "@/common/components/SheetCard";
 import SelectorItem from "@/common/components/SelectorItem";
 
 export default {
   name: "BuilderSizeSelector",
   components: {
-    SheetCard,
     SelectorItem,
   },
   props: {
