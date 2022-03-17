@@ -22,18 +22,11 @@
 </template>
 
 <script>
-import EventBus from "@/common/eventBus";
-
 export default {
   name: "AppLayoutHeader",
   data: () => ({
     cartPrice: null,
   }),
-  mounted() {
-    EventBus.$on("emitFromChild", (data) => {
-      this.cartPrice += data;
-    });
-  },
 };
 </script>
 

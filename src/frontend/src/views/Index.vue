@@ -147,9 +147,7 @@ export default {
       this.getIngredientById(this.ingredients, data.id).count = data.count;
 
       if (ingredient) {
-        data.count === 0
-          ? this.deleteIngredientById(this.pizzaConstruct.ingredients, data.id)
-          : "";
+        data.count === 0 ? this.deleteIngredientById(data.id) : "";
         ingredient.count = data.count;
         return;
       }
@@ -175,10 +173,12 @@ export default {
       return array.find((item) => item.id == id);
     },
 
-    deleteIngredientById(array, id) {
-      array.filter(function (item, index, array) {
-        item.id === id ? array.splice(index, 1) : "";
-      });
+    deleteIngredientById(id) {
+      this.pizzaConstruct.ingredients = this.pizzaConstruct.ingredients.filter(
+        function (item) {
+          return item.id !== id;
+        }
+      );
     },
 
     addToCart(price) {
