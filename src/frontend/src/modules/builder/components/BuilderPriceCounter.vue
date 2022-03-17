@@ -1,14 +1,7 @@
 <template>
   <div class="content__result">
     <p>Итого: {{ total }} ₽</p>
-    <button
-      type="button"
-      class="button"
-      :disabled="!isValid"
-      @click="$emit('addToCart', total)"
-    >
-      Готовьте!
-    </button>
+    <button type="button" class="button" :disabled="!isValid">Готовьте!</button>
   </div>
 </template>
 

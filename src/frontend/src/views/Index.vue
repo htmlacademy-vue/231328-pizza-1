@@ -1,52 +1,47 @@
 <template>
-  <div class="page page--index">
-    <AppLayout :price="priceToCart" />
-    <main class="content">
-      <form action="#" method="post">
-        <div class="content__wrapper">
-          <h1 class="title title--big">Конструктор пиццы</h1>
+  <main class="content">
+    <form action="#" method="post">
+      <div class="content__wrapper">
+        <h1 class="title title--big">Конструктор пиццы</h1>
 
-          {{ pizzaConstruct }}
+        <BuilderDoughSelector :dough="dough" @onChangeDough="setDough" />
 
-          <BuilderDoughSelector :dough="dough" @onChangeDough="setDough" />
+        <BuilderSizeSelector :sizes="sizes" @onChangeSizes="setSize" />
 
-          <BuilderSizeSelector :sizes="sizes" @onChangeSizes="setSize" />
+        <BuilderIngredientsSelector
+          :sauces="sauces"
+          :ingredients="ingredients"
+          @onChangeSauce="setSauce"
+          @onChangeIngredient="setIngredient"
+        />
 
-          <BuilderIngredientsSelector
-            :sauces="sauces"
-            :ingredients="ingredients"
-            @onChangeSauce="setSauce"
-            @onChangeIngredient="setIngredient"
-          />
+        <div class="content__pizza">
+          <label class="input">
+            <span class="visually-hidden">Название пиццы</span>
+            <input
+              type="text"
+              name="pizza_name"
+              placeholder="Введите название пиццы"
+              v-model="pizzaConstruct.name"
+            />
 
-          <div class="content__pizza">
-            <label class="input">
-              <span class="visually-hidden">Название пиццы</span>
-              <input
-                type="text"
-                name="pizza_name"
-                placeholder="Введите название пиццы"
-                v-model="pizzaConstruct.name"
-              />
+            <BuilderPizzaView
+              :dough="pizzaConstruct.dough.id"
+              :sauce="pizzaConstruct.sauce.id"
+              :ingredients="pizzaConstruct.ingredients"
+              @dropIngredient="setDroppedIngredient"
+            />
 
-              <BuilderPizzaView
-                :dough="pizzaConstruct.dough.id"
-                :sauce="pizzaConstruct.sauce.id"
-                :ingredients="pizzaConstruct.ingredients"
-                @dropIngredient="setDroppedIngredient"
-              />
-
-              <BuilderPriceCounter
-                :total="getTotalPrice"
-                :isValid="pizzaConstructValidator"
-                @addToCart="addToCart"
-              />
-            </label>
-          </div>
+            <BuilderPriceCounter
+              :total="getTotalPrice"
+              :isValid="pizzaConstructValidator"
+            />
+          </label>
         </div>
-      </form>
-    </main>
-  </div>
+      </div>
+    </form>
+    <router-view />
+  </main>
 </template>
 
 <script>
@@ -61,8 +56,6 @@ import {
   normalizeIngredients,
 } from "@/common/helpers.js";
 
-import AppLayout from "@/layouts/AppLayout";
-
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector";
 import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelector";
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector";
@@ -72,7 +65,6 @@ import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounte
 export default {
   name: "Index",
   components: {
-    AppLayout,
     BuilderDoughSelector,
     BuilderSizeSelector,
     BuilderIngredientsSelector,
@@ -103,7 +95,6 @@ export default {
       },
       ingredients: [],
     },
-    priceToCart: 0,
   }),
   computed: {
     pizzaConstructValidator: function () {
@@ -156,9 +147,7 @@ export default {
       this.getIngredientById(this.ingredients, data.id).count = data.count;
 
       if (ingredient) {
-        data.count === 0
-          ? this.deleteIngredientById(this.pizzaConstruct.ingredients, data.id)
-          : "";
+        data.count === 0 ? this.deleteIngredientById(data.id) : "";
         ingredient.count = data.count;
         return;
       }
@@ -184,14 +173,18 @@ export default {
       return array.find((item) => item.id == id);
     },
 
-    deleteIngredientById(array, id) {
-      array.find(function (item, index, array) {
-        item.id === id ? array.splice(index, 1) : "";
-      });
+    deleteIngredientById(id) {
+      this.pizzaConstruct.ingredients = this.pizzaConstruct.ingredients.filter(
+        function (item) {
+          return item.id !== id;
+        }
+      );
     },
 
     addToCart(price) {
       this.priceToCart = price;
+      console.log("index");
+      this.$emit("addToCart", this.priceToCart);
     },
   },
 };

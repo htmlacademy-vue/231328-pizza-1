@@ -22,13 +22,11 @@
 </template>
 
 <script>
-import SheetCard from "@/common/components/SheetCard";
 import SelectorItem from "@/common/components/SelectorItem";
 
 export default {
   name: "BuilderDoughSelector",
   components: {
-    SheetCard,
     SelectorItem,
   },
   props: {

@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import SheetCard from "@/common/components/SheetCard";
 import RadioButton from "@/common/components/RadioButton";
 import ItemCounter from "@/common/components/ItemCounter";
 import AppDrag from "@/common/components/AppDrag";
@@ -58,7 +57,6 @@ import AppDrag from "@/common/components/AppDrag";
 export default {
   name: "BuilderSizeSelector",
   components: {
-    SheetCard,
     RadioButton,
     ItemCounter,
     AppDrag,
