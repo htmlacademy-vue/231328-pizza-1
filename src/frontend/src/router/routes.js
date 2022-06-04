@@ -13,6 +13,12 @@ export default [
         component: () => import("@/views/Login.vue"),
         meta: { layout: "AppLayoutDefault" },
       },
+      {
+        path: "/success",
+        name: "Success",
+        component: () => import("@/views/Success.vue"),
+        meta: { layout: "AppLayoutDefault" },
+      },
     ],
   },
   {

@@ -4,7 +4,7 @@
       type="button"
       class="counter__button counter__button--minus"
       @click="$emit('update:count', count - 1)"
-      :disabled="count < 1"
+      :disabled="count <= min"
     >
       <span class="visually-hidden">Меньше</span>
     </button>
@@ -19,7 +19,7 @@
       type="button"
       class="counter__button counter__button--plus"
       @click="$emit('update:count', count + 1)"
-      :disabled="count >= 3"
+      :disabled="count >= max"
     >
       <span class="visually-hidden">Больше</span>
     </button>
@@ -37,6 +37,14 @@ export default {
     count: {
       type: Number,
       reuired: false,
+    },
+    min: {
+      type: Number,
+      default: 0,
+    },
+    max: {
+      type: Number,
+      default: 99,
     },
   },
 };
