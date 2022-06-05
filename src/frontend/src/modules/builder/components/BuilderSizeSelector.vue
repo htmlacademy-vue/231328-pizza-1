@@ -9,12 +9,10 @@
           :title="item.name"
           name="diameter"
           :value="item.value"
-          :checked="item.checked"
+          :checked="pizzaConstruct.sizeId === item.id"
           class="diameter__input"
           :class="`diameter__input--${item.value}`"
-          @onChange="
-            $emit('onChangeSizes', { id: item.id, multiplier: item.multiplier })
-          "
+          @onChange="setSize(item.id)"
         />
       </template>
     </SheetCard>
@@ -23,16 +21,23 @@
 
 <script>
 import SelectorItem from "@/common/components/SelectorItem";
+import { mapState, mapMutations } from "vuex";
+import { SET_SIZE } from "@/store/mutation-types";
 
 export default {
   name: "BuilderSizeSelector",
   components: {
     SelectorItem,
   },
-  props: {
-    sizes: {
-      type: Array,
-      requred: true,
+  computed: {
+    ...mapState("Builder", ["sizes"]),
+    ...mapState(["pizzaConstruct"]),
+  },
+  methods: {
+    ...mapMutations([SET_SIZE]),
+
+    setSize(id) {
+      this[SET_SIZE](id);
     },
   },
 };

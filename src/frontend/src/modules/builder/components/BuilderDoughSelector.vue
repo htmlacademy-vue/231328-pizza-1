@@ -11,10 +11,10 @@
           :description="item.description"
           name="dough"
           :value="item.value"
-          :checked="item.checked"
+          :checked="pizzaConstruct.doughId === item.id"
           class="dough__input"
           :class="`dough__input--${item.value}`"
-          @onChange="$emit('onChangeDough', { id: item.id, price: item.price })"
+          @onChange="setDough(item.id)"
         />
       </template>
     </SheetCard>
@@ -23,16 +23,23 @@
 
 <script>
 import SelectorItem from "@/common/components/SelectorItem";
+import { mapState, mapMutations } from "vuex";
+import { SET_DOUGH } from "@/store/mutation-types";
 
 export default {
   name: "BuilderDoughSelector",
   components: {
     SelectorItem,
   },
-  props: {
-    dough: {
-      type: Array,
-      requred: true,
+  computed: {
+    ...mapState("Builder", ["dough"]),
+    ...mapState(["pizzaConstruct"]),
+  },
+  methods: {
+    ...mapMutations([SET_DOUGH]),
+
+    setDough(id) {
+      this[SET_DOUGH](id);
     },
   },
 };

@@ -3,15 +3,16 @@ export default [
     path: "/",
     name: "Index",
     component: () => import("@/views/Index.vue"),
-    meta: {
-      layout: "AppLayoutDefault",
-    },
     children: [
       {
         path: "/login",
         name: "Login",
         component: () => import("@/views/Login.vue"),
-        meta: { layout: "AppLayoutDefault" },
+      },
+      {
+        path: "/success",
+        name: "Success",
+        component: () => import("@/views/Success.vue"),
       },
     ],
   },
@@ -19,9 +20,6 @@ export default [
     path: "/cart",
     name: "Cart",
     component: () => import("@/views/Cart.vue"),
-    meta: {
-      layout: "AppLayoutDefault",
-    },
   },
   {
     path: "/orders",
