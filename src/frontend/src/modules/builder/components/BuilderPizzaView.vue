@@ -21,7 +21,7 @@
 <script>
 import AppDrop from "@/common/components/AppDrop.vue";
 import { mapState, mapGetters, mapMutations } from "vuex";
-import { SET_INGREDIENT } from "@/store/mutation-types";
+import { SET_INGREDIENT, UPDATE_INGREDIENT } from "@/store/mutation-types";
 
 export default {
   name: "BuilderPizzaView",
@@ -31,6 +31,7 @@ export default {
   computed: {
     ...mapState(["pizzaConstruct"]),
     ...mapGetters("Builder", ["getSauceById", "getIngredientById"]),
+    ...mapGetters(["getIngredientQuantityById"]),
 
     pizzaFoundationClass() {
       let doughClass = this.pizzaConstruct.doughId === 1 ? "small" : "big";
@@ -39,10 +40,16 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([SET_INGREDIENT]),
+    ...mapMutations([SET_INGREDIENT, UPDATE_INGREDIENT]),
 
-    setDroppedIngredient(ingredient) {
-      this[SET_INGREDIENT](ingredient);
+    setDroppedIngredient({ id }) {
+      let ingredientQuantity = this.getIngredientQuantityById(id);
+      ingredientQuantity
+        ? this[UPDATE_INGREDIENT]({
+            id: id,
+            count: ingredientQuantity + 1,
+          })
+        : this[SET_INGREDIENT](id);
     },
 
     getClassByIngredient(id) {

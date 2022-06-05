@@ -101,8 +101,7 @@ export default {
       this[REMOVE_FROM_CART](index);
     },
     checkPizzasQuantity() {
-      // Если пицц нет вызываем action
-      !this.isEmpty ? this.resetCart() : "";
+      !this.isEmpty && this.resetCart();
     },
   },
 };
