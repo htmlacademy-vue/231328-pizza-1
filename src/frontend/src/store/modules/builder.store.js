@@ -1,4 +1,4 @@
-import jsonPizza from "@/static/pizza.json";
+/* eslint-disable */
 import { SET_BUILDER } from "@/store/mutation-types";
 import {
   normalizeDough,
@@ -38,13 +38,18 @@ export default {
     },
   },
   actions: {
-    query({ commit }) {
-      const data = jsonPizza;
+    async query({ commit }) {
+      let data = {};
 
-      data.dough = normalizeDough(data.dough);
-      data.ingredients = normalizeIngredients(data.ingredients);
-      data.sauces = normalizeSauces(data.sauces);
-      data.sizes = normalizeSizes(data.sizes);
+      const doughApi = await this.$api.dough.query();
+      const ingredientsApi = await this.$api.ingredients.query();
+      const saucesApi = await this.$api.sauces.query();
+      const sizesApi = await this.$api.sizes.query();
+
+      data.dough = normalizeDough(doughApi);
+      data.ingredients = normalizeIngredients(ingredientsApi);
+      data.sauces = normalizeSauces(saucesApi);
+      data.sizes = normalizeSizes(sizesApi);
 
       commit(SET_BUILDER, data);
     },

@@ -1,8 +1,10 @@
+import { cloneDeep } from "lodash";
 import Vue from "vue";
 import Vuex from "vuex";
 
+import VuexPlugins from "@/plugins/vuexPlugins";
+
 import modules from "@/store/modules";
-import { cloneDeep } from "lodash";
 
 import {
   DEFAULT_DOUGH_ID,
@@ -128,5 +130,6 @@ export default new Vuex.Store({
       dispatch("Cart/query");
     },
   },
+  plugins: [VuexPlugins],
   modules,
 });
