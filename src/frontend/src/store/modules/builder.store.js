@@ -10,6 +10,7 @@ import {
 export default {
   namespaced: true,
   state: {
+    BuilderIsReady: false,
     dough: [],
     ingredients: [],
     sauces: [],
@@ -35,6 +36,8 @@ export default {
       state.ingredients = data.ingredients;
       state.sauces = data.sauces;
       state.sizes = data.sizes;
+
+      state.BuilderIsReady = true;
     },
   },
   actions: {
@@ -46,10 +49,10 @@ export default {
       const saucesApi = await this.$api.sauces.query();
       const sizesApi = await this.$api.sizes.query();
 
-      data.dough = normalizeDough(doughApi);
-      data.ingredients = normalizeIngredients(ingredientsApi);
-      data.sauces = normalizeSauces(saucesApi);
-      data.sizes = normalizeSizes(sizesApi);
+      data.dough = await normalizeDough(doughApi);
+      data.ingredients = await normalizeIngredients(ingredientsApi);
+      data.sauces = await normalizeSauces(saucesApi);
+      data.sizes = await normalizeSizes(sizesApi);
 
       commit(SET_BUILDER, data);
     },
