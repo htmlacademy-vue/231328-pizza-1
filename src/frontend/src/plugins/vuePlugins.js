@@ -1,4 +1,5 @@
 import Vue from "vue";
+import JWTService from "@/services/jwt.service";
 import { createResources } from "@/common/helpers";
 
 const plugins = {
@@ -7,7 +8,6 @@ const plugins = {
       computed: {
         /*
          * Теперь в компонентах мы можем обратиться к методам api с помощью $api.***
-         *
          * Например: $api.dough – внутри набор методов
          *
          */
@@ -15,6 +15,7 @@ const plugins = {
           // Функция возвращает объект, в нем объекты с методами для каждого вида api-данных
           return createResources();
         },
+        $jwt: () => JWTService,
       },
     });
   },

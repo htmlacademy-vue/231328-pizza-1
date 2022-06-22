@@ -4,13 +4,13 @@ import resources from "@/common/resources";
 import { ReadOnlyApiService } from "@/services/api.service";
 
 /*
- * Вернет объект, в нем объекты с метjдами для каждого вида api-данных
+ * Вернет объект, в нем объекты с методами для каждого вида api-данных
  * Далее в vue/vuexPlugins.js мы их добавим в глобальную область видимости
  *
  * В resources мы храним названия api данных
  *
  * Например, в dough запишем объект с методами для получения размеров пиццы
- *
+ * $api.dough
  */
 export const createResources = () => {
   return {
