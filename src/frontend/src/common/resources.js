@@ -4,4 +4,5 @@ export default {
   INGREDIENTS_API: "ingredients",
   SAUCES_API: "sauces",
   SIZES_API: "sizes",
+  AUTH_API: "auth",
 };

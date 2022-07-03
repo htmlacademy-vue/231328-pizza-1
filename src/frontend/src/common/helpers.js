@@ -1,7 +1,15 @@
 import { DOUGH, SIZES, SAUCES, INGREDIENTS, MISC } from "@/common/constants";
 
 import resources from "@/common/resources";
-import { ReadOnlyApiService } from "@/services/api.service";
+import { ReadOnlyApiService, AuthApiService } from "@/services/api.service";
+
+// setAuth принимает store в качестве аргумента для того, чтобы задать
+// токен авторизации и вызвать действие для получения профиля пользователя.
+// isAuthenticated переводим в true в действии сразу же после получения данных о пользователе.
+export const setAuth = (store) => {
+  store.$api.auth.setAuthHeader();
+  store.dispatch("Auth/getMe");
+};
 
 /*
  * Вернет объект, в нем объекты с методами для каждого вида api-данных
@@ -21,6 +29,7 @@ export const createResources = () => {
     ),
     [resources.SAUCES_API]: new ReadOnlyApiService(resources.SAUCES_API),
     [resources.SIZES_API]: new ReadOnlyApiService(resources.SIZES_API),
+    [resources.AUTH_API]: new AuthApiService(resources.AUTH_API),
   };
 };
 

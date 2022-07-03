@@ -2,14 +2,9 @@
   <div class="content__result">
     <!-- Смотри BuilderPizzaView.vue зачем нужен BuilderIsReady -->
     <p>Итого: {{ BuilderIsReady && getPizzaPrice }} ₽</p>
-    <button
-      type="button"
-      class="button"
-      :disabled="!constructIsValid"
-      @click="addToCart"
-    >
+    <AppButton type="button" :disabled="!constructIsValid" @click="addToCart">
       Готовьте!
-    </button>
+    </AppButton>
   </div>
 </template>
 
