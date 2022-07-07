@@ -5,120 +5,32 @@
         <h1 class="title title--big">Мои данные</h1>
       </div>
 
-      <div class="user">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="img/users/user5@2x.webp 1x, img/users/user5@4x.webp 2x"
-          />
-          <img
-            src="img/users/user5@2x.jpg"
-            srcset="img/users/user5@4x.jpg"
-            alt="Василий Ложкин"
-            width="72"
-            height="72"
-          />
-        </picture>
-        <div class="user__name">
-          <span>Василий Ложкин</span>
-        </div>
-        <p class="user__phone">
-          Контактный телефон: <span>+7 999-999-99-99</span>
-        </p>
-      </div>
+      <ProfileUserData />
 
-      <div class="layout__address">
-        <div class="sheet address-form">
-          <div class="address-form__header">
-            <b>Адрес №1. Тест</b>
-            <div class="address-form__edit">
-              <button type="button" class="icon">
-                <span class="visually-hidden">Изменить адрес</span>
-              </button>
-            </div>
-          </div>
-          <p>Невский пр., д. 22, кв. 46</p>
-          <small>Позвоните, пожалуйста, от проходной</small>
-        </div>
-      </div>
+      <ProfileUserAddresses
+        v-for="address of addresses"
+        :key="address.id"
+        :content="address"
+        :formShape="formShape"
+        @onEdit="editAddress($event)"
+      />
 
-      <div class="layout__address">
-        <form
-          action="test.html"
-          method="post"
-          class="address-form address-form--opened sheet"
-        >
-          <div class="address-form__header">
-            <b>Адрес №1</b>
-          </div>
-
-          <div class="address-form__wrapper">
-            <div class="address-form__input">
-              <label class="input">
-                <span>Название адреса*</span>
-                <input
-                  type="text"
-                  name="addr-name"
-                  placeholder="Введите название адреса"
-                  required
-                />
-              </label>
-            </div>
-            <div class="address-form__input address-form__input--size--normal">
-              <label class="input">
-                <span>Улица*</span>
-                <input
-                  type="text"
-                  name="addr-street"
-                  placeholder="Введите название улицы"
-                  required
-                />
-              </label>
-            </div>
-            <div class="address-form__input address-form__input--size--small">
-              <label class="input">
-                <span>Дом*</span>
-                <input
-                  type="text"
-                  name="addr-house"
-                  placeholder="Введите номер дома"
-                  required
-                />
-              </label>
-            </div>
-            <div class="address-form__input address-form__input--size--small">
-              <label class="input">
-                <span>Квартира</span>
-                <input
-                  type="text"
-                  name="addr-apartment"
-                  placeholder="Введите № квартиры"
-                />
-              </label>
-            </div>
-            <div class="address-form__input">
-              <label class="input">
-                <span>Комментарий</span>
-                <input
-                  type="text"
-                  name="addr-comment"
-                  placeholder="Введите комментарий"
-                />
-              </label>
-            </div>
-          </div>
-
-          <div class="address-form__buttons">
-            <button type="button" class="button button--transparent">
-              Удалить
-            </button>
-            <button type="submit" class="button">Сохранить</button>
-          </div>
-        </form>
-      </div>
+      <ProfileUserFormAddress
+        ref="ProfileUserFormAddress"
+        v-if="formShape"
+        @onSave="choicerAddressMethod($event)"
+        @onDelete="deleteAddress($event)"
+        :formShape="formShape"
+        :addressToEdit="addressToEdit"
+      />
 
       <div class="layout__button">
-        <button type="button" class="button button--border">
+        <button
+          v-if="!formShape"
+          type="button"
+          class="button button--border"
+          @click="formShape = 'create'"
+        >
           Добавить новый адрес
         </button>
       </div>
@@ -127,8 +39,96 @@
 </template>
 
 <script>
+import ProfileUserData from "@/modules/profile/ProfileUserData";
+import ProfileUserAddresses from "@/modules/profile/ProfileUserAddresses";
+import ProfileUserFormAddress from "@/modules/profile/ProfileUserFormAddress";
+
 export default {
   name: "Profile",
+  components: {
+    ProfileUserData,
+    ProfileUserAddresses,
+    ProfileUserFormAddress,
+  },
+  data: () => ({
+    formShape: false,
+    addresses: null,
+    addressToEdit: null,
+  }),
+  async created() {
+    try {
+      this.addresses = await this.$api.addresses.query();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  methods: {
+    choicerAddressMethod(address) {
+      // Если форма в состоянии создания адреса – post-api, иначе – put-api
+      // сreate когда жмем по кнопке создания, edit емитим из компоненты
+      // ProfileUserFormAddress в метод editAddress()
+      this.formShape === "create"
+        ? this.postAddress(address)
+        : this.putAddress(address);
+    },
+
+    editAddress(address) {
+      // 1. Привели форму в состояние редактирования адреса
+      this.formShape = "edit";
+      // 2. Передали компоненте формы адрес и отобразили в инпутах
+      this.addressToEdit = address;
+      // 3. Плавно проскроллили к компоненте формы
+      setTimeout(() => {
+        this.$refs.ProfileUserFormAddress.$el.scrollIntoView({
+          behavior: "smooth",
+        });
+      }, 0);
+      // 4. Отфильтррвали редактируемый адрес из списка адресов
+      this.addresses = this.addresses.filter((item) => item.id !== address.id);
+    },
+
+    async postAddress(address) {
+      try {
+        // 1. Сделали post-запрос к API
+        this.$api.addresses.post(address);
+        // 2. Скрыли форму
+        this.formShape = false;
+        // 3. Добавили адрес в хранилище компоненты
+        this.addresses.push(address);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async putAddress(address) {
+      try {
+        // 1. Сделали put-запрос к API
+        this.$api.addresses.put(address);
+        // 2. Скрыли форму
+        this.formShape = false;
+        // 3. Добавили адрес в хранилище компоненты
+        this.addresses.push(address);
+        // 4. Очистили в текущей компоненте редактируемый адрес передаваемый в форму
+        // Так как если после сохранения редактируемого адреса попробовать
+        // создать новый, отобразяться данные редактируемого до этого
+        this.addressToEdit = null;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async deleteAddress(id) {
+      try {
+        // 1. Сделали delete-запрос к API
+        this.$api.addresses.delete(id);
+        // 2. Скрыли форму
+        this.formShape = false;
+        // Удаляемый адрес уже убран из списка адресов компоненты в editAddress()
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
 };
 </script>
 

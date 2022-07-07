@@ -1,7 +1,11 @@
 import { DOUGH, SIZES, SAUCES, INGREDIENTS, MISC } from "@/common/constants";
 
 import resources from "@/common/resources";
-import { ReadOnlyApiService, AuthApiService } from "@/services/api.service";
+import {
+  ReadOnlyApiService,
+  AuthApiService,
+  CrudApiService,
+} from "@/services/api.service";
 
 // setAuth принимает store в качестве аргумента для того, чтобы задать
 // токен авторизации и вызвать действие для получения профиля пользователя.
@@ -30,6 +34,9 @@ export const createResources = () => {
     [resources.SAUCES_API]: new ReadOnlyApiService(resources.SAUCES_API),
     [resources.SIZES_API]: new ReadOnlyApiService(resources.SIZES_API),
     [resources.AUTH_API]: new AuthApiService(resources.AUTH_API),
+
+    [resources.ORDERS_API]: new CrudApiService(resources.ORDERS_API),
+    [resources.ADDRESSES_API]: new CrudApiService(resources.ADDRESSES_API),
   };
 };
 

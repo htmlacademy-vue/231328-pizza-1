@@ -24,7 +24,29 @@ export class ReadOnlyApiService {
   }
 }
 
-// наследуемся от BaseApiService, так как класс не подразумевает CRUD операции
+export class CrudApiService extends ReadOnlyApiService {
+  #resource;
+  constructor(resource) {
+    super(resource);
+    this.#resource = resource;
+  }
+
+  async post(entity) {
+    const { data } = await axios.post(this.#resource, entity);
+    return data;
+  }
+
+  async put(entity) {
+    const { data } = await axios.put(`${this.#resource}/${entity.id}`, entity);
+    return data;
+  }
+
+  async delete(id) {
+    const { data } = await axios.delete(`${this.#resource}/${id}`);
+    return data;
+  }
+}
+
 export class AuthApiService {
   // задаём токен авторизации
   setAuthHeader() {
