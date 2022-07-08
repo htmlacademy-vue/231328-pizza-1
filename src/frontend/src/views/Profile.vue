@@ -10,7 +10,7 @@
       <ProfileUserAddresses
         v-for="address of addresses"
         :key="address.id"
-        :content="address"
+        :address="address"
         :formShape="formShape"
         @onEdit="editAddress($event)"
       />
@@ -55,12 +55,8 @@ export default {
     addresses: null,
     addressToEdit: null,
   }),
-  async created() {
-    try {
-      this.addresses = await this.$api.addresses.query();
-    } catch (error) {
-      console.log(error);
-    }
+  created() {
+    this.queryAddresses();
   },
   methods: {
     choicerAddressMethod(address) {
@@ -87,14 +83,24 @@ export default {
       this.addresses = this.addresses.filter((item) => item.id !== address.id);
     },
 
+    async queryAddresses() {
+      try {
+        this.addresses = await this.$api.addresses.query();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async postAddress(address) {
       try {
         // 1. Сделали post-запрос к API
         this.$api.addresses.post(address);
         // 2. Скрыли форму
         this.formShape = false;
-        // 3. Добавили адрес в хранилище компоненты
-        this.addresses.push(address);
+        // 3. Делаем get запрос к API, а не просто push(address) в хранилище компононеты,
+        //    потому что новосозданный адрес при редактировании и сохранение(PUT) даст ошибку, тк
+        //    id его не будет известен
+        await this.queryAddresses(); // QESTION: Нежно ли здесь ждать?
       } catch (error) {
         console.log(error);
       }
@@ -109,8 +115,8 @@ export default {
         // 3. Добавили адрес в хранилище компоненты
         this.addresses.push(address);
         // 4. Очистили в текущей компоненте редактируемый адрес передаваемый в форму
-        // Так как если после сохранения редактируемого адреса попробовать
-        // создать новый, отобразяться данные редактируемого до этого
+        //    Так как если после сохранения редактируемого адреса попробовать
+        //    создать новый, отобразяться данные редактируемого до этого
         this.addressToEdit = null;
       } catch (error) {
         console.log(error);
@@ -123,7 +129,10 @@ export default {
         this.$api.addresses.delete(id);
         // 2. Скрыли форму
         this.formShape = false;
-        // Удаляемый адрес уже убран из списка адресов компоненты в editAddress()
+        // 2.1 Удаляемый адрес уже убран из списка адресов компоненты в editAddress()
+        // 3. Очищаем редактируемый адрес,
+        //    иначе при попытке создать следом новый в нем будут данные удаленного
+        this.addressToEdit = null;
       } catch (error) {
         console.log(error);
       }

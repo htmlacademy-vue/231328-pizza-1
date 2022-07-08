@@ -2,12 +2,12 @@
   <div class="layout__address">
     <div class="sheet address-form">
       <div class="address-form__header">
-        <b>{{ content.name }}</b>
+        <b>{{ address.name }}</b>
         <div class="address-form__edit">
           <button
             type="button"
             class="icon"
-            @click="$emit('onEdit', content)"
+            @click="$emit('onEdit', address)"
             :disabled="formShape"
           >
             <span class="visually-hidden">Изменить адрес</span>
@@ -15,9 +15,9 @@
         </div>
       </div>
       <p>
-        {{ content.street }}, д. {{ content.building }}, кв. {{ content.flat }}
+        {{ address.street }}, д. {{ address.building }}, кв. {{ address.flat }}
       </p>
-      <small>{{ content.comment }}</small>
+      <small>{{ address.comment }}</small>
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@
 export default {
   name: "ProfileUserAddresses",
   props: {
-    content: {
+    address: {
       type: Object,
       required: true,
     },
