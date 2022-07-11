@@ -1,14 +1,10 @@
 <template>
   <div class="content__result">
-    <p>Итого: {{ getPizzaPrice }} ₽</p>
-    <button
-      type="button"
-      class="button"
-      :disabled="!constructIsValid"
-      @click="addToCart"
-    >
+    <!-- Смотри BuilderPizzaView.vue зачем нужен BuilderIsReady -->
+    <p>Итого: {{ BuilderIsReady && getPizzaPrice }} ₽</p>
+    <AppButton type="button" :disabled="!constructIsValid" @click="addToCart">
       Готовьте!
-    </button>
+    </AppButton>
   </div>
 </template>
 
@@ -24,6 +20,7 @@ export default {
   name: "BuilderPriceCounter",
   computed: {
     ...mapState(["pizzaConstruct"]),
+    ...mapState("Builder", ["BuilderIsReady"]),
     ...mapGetters(["constructIsValid", "getPizzaPrice"]),
   },
   methods: {

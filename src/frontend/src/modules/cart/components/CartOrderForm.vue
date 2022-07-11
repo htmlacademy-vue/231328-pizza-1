@@ -9,46 +9,34 @@
           <option value="3" v-if="isAuthUser">Дом</option>
         </select>
       </label>
-
-      <label class="input input--big-label">
-        <span>Контактный телефон:</span>
-        <input
-          type="text"
-          name="tel"
-          placeholder="+7 999-999-99-99"
-          :value="this.$store.state.Cart.phone"
-          @input="setPhone($event.target.value)"
-        />
-      </label>
+      <AppInput
+        title="Контактный телефон:"
+        format="big"
+        name="tel"
+        placeholder="+7 999-999-99-99"
+        :value="this.$store.state.Cart.phone"
+        @input="setPhone($event)"
+      />
 
       <div class="cart-form__address">
         <span class="cart-form__label" v-show="showAddress">Новый адрес:</span>
 
         <div class="cart-form__input" v-show="showAddress">
-          <label class="input">
-            <span>Улица*</span>
-            <input type="text" name="street" v-model="address.street" />
-          </label>
+          <AppInput title="Улица*" name="street" v-model="address.street" />
         </div>
 
         <div
           class="cart-form__input cart-form__input--small"
           v-show="showAddress"
         >
-          <label class="input">
-            <span>Дом*</span>
-            <input type="text" name="house" v-model="address.building" />
-          </label>
+          <AppInput title="Дом*" name="house" v-model="address.building" />
         </div>
 
         <div
           class="cart-form__input cart-form__input--small"
           v-show="showAddress"
         >
-          <label class="input">
-            <span>Квартира</span>
-            <input type="text" name="apartment" v-model="address.flat" />
-          </label>
+          <AppInput title="Квартира" name="apartment" v-model="address.flat" />
         </div>
       </div>
     </div>

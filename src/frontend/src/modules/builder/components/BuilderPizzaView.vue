@@ -1,7 +1,13 @@
 <template>
   <div class="content__constructor">
     <AppDrop @drop="setDroppedIngredient($event)">
-      <div class="pizza" :class="pizzaFoundationClass">
+      <!-- BuilderIsReady отслеживаем когда builder-vuex будет собран и нормализован,
+      тк используемые здесь геттрер-методы отрабатывают до того как builder-vuex будет готов к работе
+      например, value еще не добавлен в хранилище с dought, но геттер-метод уже вызывается и просит value
+
+      TODO: чекнуть более изящное решение, это кажись говно
+       -->
+      <div class="pizza" :class="BuilderIsReady && pizzaFoundationClass">
         <div class="pizza__wrapper">
           <div
             v-for="item in pizzaConstruct.ingredients"
@@ -30,6 +36,7 @@ export default {
   },
   computed: {
     ...mapState(["pizzaConstruct"]),
+    ...mapState("Builder", ["BuilderIsReady"]),
     ...mapGetters("Builder", ["getSauceById", "getIngredientById"]),
     ...mapGetters(["getIngredientQuantityById"]),
 

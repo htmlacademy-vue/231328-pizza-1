@@ -53,6 +53,9 @@
 }
 
 .header__user {
+  display: flex;
+  align-items: center;
+
   a {
     display: block;
 
@@ -113,6 +116,22 @@
     vertical-align: middle;
 
     background: url("~@/assets/img/login.svg") no-repeat center;
+    background-size: auto 50%;
+  }
+}
+
+.header__logout {
+  &::before {
+    display: inline-block;
+
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+
+    content: '';
+    vertical-align: middle;
+
+    background:  url("~@/assets/img/login.svg") no-repeat center;
     background-size: auto 50%;
   }
 }

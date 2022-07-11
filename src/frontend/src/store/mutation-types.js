@@ -20,3 +20,6 @@ export const UPDATE_MISC = "UPDATE_MISC";
 export const SET_PHONE = "SET_PHONE";
 export const SET_ADDRESS = "SET_ADDRESS";
 export const RESET_CART = "RESET_CART";
+
+// Auth
+export const SET_ENTITY = "SET_ENTITY";

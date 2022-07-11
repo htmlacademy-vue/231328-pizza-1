@@ -10,20 +10,15 @@
 
         <BuilderIngredientsSelector />
         <div class="content__pizza">
-          <label class="input">
-            <span class="visually-hidden">Название пиццы</span>
-            <input
-              type="text"
-              name="pizza_name"
-              placeholder="Введите название пиццы"
-              :value="pizzaConstruct.name"
-              @input="setName($event.target.value)"
-            />
+          <AppInput
+            name="pizza_name"
+            placeholder="Введите название пиццы"
+            v-model="pizzaName"
+          />
 
-            <BuilderPizzaView />
+          <BuilderPizzaView />
 
-            <BuilderPriceCounter />
-          </label>
+          <BuilderPriceCounter />
         </div>
       </div>
     </form>
@@ -60,13 +55,19 @@ export default {
   }),
   computed: {
     ...mapState(["pizzaConstruct"]),
+    // Вызов мутации с v-model
+    // TODO: Чекнуть на решение получше, разобрать логику работы
+    pizzaName: {
+      get() {
+        return this.pizzaConstruct.name;
+      },
+      set(name) {
+        this[SET_NAME](name);
+      },
+    },
   },
   methods: {
     ...mapMutations([SET_NAME]),
-
-    setName(name) {
-      this[SET_NAME](name);
-    },
   },
 };
 </script>

@@ -29,9 +29,7 @@
       </div>
 
       <div class="footer__submit">
-        <button type="button" class="button" @click="submitOrder()">
-          Оформить заказ
-        </button>
+        <AppButton @click="submitOrder()">Оформить заказ</AppButton>
       </div>
     </section>
   </form>

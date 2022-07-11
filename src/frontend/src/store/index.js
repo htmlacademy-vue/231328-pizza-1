@@ -1,8 +1,10 @@
+import { cloneDeep } from "lodash";
 import Vue from "vue";
 import Vuex from "vuex";
 
+import VuexPlugins from "@/plugins/vuexPlugins";
+
 import modules from "@/store/modules";
-import { cloneDeep } from "lodash";
 
 import {
   DEFAULT_DOUGH_ID,
@@ -82,6 +84,10 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    // Во ВьюВорке изменение/удаление/добавление значения сделано одной мутацией
+    // что выглядит более логичным и простым
+    // У меня для каждого типа своя, что наверное не требуется в данном контексте
+    // TODO: Переписать перед защитой, или в перед началом след модуля
     [SET_NAME]({ pizzaConstruct }, name) {
       pizzaConstruct.name = name;
     },
@@ -128,5 +134,6 @@ export default new Vuex.Store({
       dispatch("Cart/query");
     },
   },
+  plugins: [VuexPlugins],
   modules,
 });
