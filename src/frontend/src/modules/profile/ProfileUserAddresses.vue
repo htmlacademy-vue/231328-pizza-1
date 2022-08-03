@@ -4,12 +4,7 @@
       <div class="address-form__header">
         <b>{{ address.name }}</b>
         <div class="address-form__edit">
-          <button
-            type="button"
-            class="icon"
-            @click="$emit('onEdit', address)"
-            :disabled="formShape"
-          >
+          <button type="button" class="icon" @click="$emit('onEdit', address)">
             <span class="visually-hidden">Изменить адрес</span>
           </button>
         </div>
@@ -28,11 +23,6 @@ export default {
   props: {
     address: {
       type: Object,
-      required: true,
-    },
-    // Если форма уже открыта, отрубвем кнопку редактирования
-    formShape: {
-      type: [String, Boolean],
       required: true,
     },
   },

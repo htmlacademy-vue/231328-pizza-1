@@ -61,7 +61,7 @@
 
       <div class="address-form__buttons">
         <button
-          v-if="formShape !== 'create'"
+          v-if="formType !== 'post'"
           type="button"
           class="button button--transparent"
           @click="$emit('onDelete', address.id)"
@@ -99,7 +99,7 @@ export default {
     }
   },
   props: {
-    formShape: {
+    formType: {
       type: [String, Boolean],
       required: true,
     },

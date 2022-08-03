@@ -1,137 +1,72 @@
-import { cloneDeep } from "lodash";
 import Vue from "vue";
 import Vuex from "vuex";
-
 import VuexPlugins from "@/plugins/vuexPlugins";
-
+import { get, set, assign, remove } from "lodash";
 import modules from "@/store/modules";
-
 import {
-  DEFAULT_DOUGH_ID,
-  DEFAULT_SIZE_ID,
-  DEFAULT_SAUCE_ID,
-} from "@/common/constants";
-
-import {
-  SET_NAME,
-  SET_DOUGH,
-  SET_SIZE,
-  SET_SAUCE,
-  SET_INGREDIENT,
-  UPDATE_INGREDIENT,
-  DELETE_INGREDIENT,
-  SET_PRICE,
-  CHANGE_PIZZA,
-  RESET_CONSTRUCT,
+  SET_ENTITY,
+  ADD_ENTITY,
+  UPDATE_ENTITY,
+  DELETE_ENTITY,
 } from "@/store/mutation-types";
-
-/*
- * Записали state в константу,
- * чтобы можно было сбросить к дефолтному состоянию
- * после добавления пиццы в корзину
- */
-const setupState = () => ({
-  pizzaConstruct: {
-    name: "",
-    doughId: DEFAULT_DOUGH_ID,
-    sauceId: DEFAULT_SAUCE_ID,
-    sizeId: DEFAULT_SIZE_ID,
-    ingredients: [],
-    quantity: 1,
-    price: 0,
-  },
-});
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: setupState(),
   getters: {
-    getIngredientQuantityById:
-      ({ pizzaConstruct }) =>
-      (id) => {
-        let ingredient = pizzaConstruct.ingredients.find(
-          (item) => item.ingredientId === id
-        );
-        return ingredient ? ingredient.quantity : 0;
+    // Получаем любую сущность по переданному пути
+    getEntity: (state, getters, rootState) => (path) => {
+      return get(rootState, path);
+    },
+
+    // Получаем любую объект или его значение ключа по id
+    getEntityById:
+      (state, { getEntity }) =>
+      (path, id) => {
+        // Ключ в искомом объекте
+        let key = path.split("#")[1];
+        // Путь искомого объекта
+        path = path.split("#")[0];
+
+        // ATTENTION: опциональная цепочка
+        if (key) {
+          // Если передали ключ, то возвращаем значение переданного ключа в искомом объекте
+          return getEntity(path)?.find((entity) => entity.id == id)?.[key];
+        }
+        // А если нет, то возвращаем сам искомый объект
+        return getEntity(path)?.find((entity) => entity.id == id);
       },
-
-    constructIsValid({ pizzaConstruct }) {
-      return Object.values(pizzaConstruct).every((item) => item.length !== 0);
-    },
-
-    getIngredientsPrice({ pizzaConstruct }, getters, rootState, rootGetters) {
-      return pizzaConstruct.ingredients.reduce((acc, item) => {
-        return (
-          acc +
-          rootGetters["Builder/getIngredientById"](item.ingredientId).price *
-            item.quantity
-        );
-      }, 0);
-    },
-
-    getPizzaPrice({ pizzaConstruct }, getters, rootState, rootGetters) {
-      return (
-        rootGetters["Builder/getSizeById"](pizzaConstruct.sizeId).multiplier *
-        (rootGetters["Builder/getDoughById"](pizzaConstruct.doughId).price +
-          rootGetters["Builder/getSauceById"](pizzaConstruct.sauceId).price +
-          getters.getIngredientsPrice)
-      );
-    },
-
-    getPizzaFromCartByIndex: (state, getters, rootState) => (index) => {
-      return rootState.Cart.pizzas[index];
-    },
   },
   mutations: {
-    // Во ВьюВорке изменение/удаление/добавление значения сделано одной мутацией
-    // что выглядит более логичным и простым
-    // У меня для каждого типа своя, что наверное не требуется в данном контексте
-    // TODO: Переписать перед защитой, или в перед началом след модуля
-    [SET_NAME]({ pizzaConstruct }, name) {
-      pizzaConstruct.name = name;
+    [SET_ENTITY](state, { path, value }) {
+      set(state, path, value);
     },
-    [SET_DOUGH]({ pizzaConstruct }, id) {
-      pizzaConstruct.doughId = id;
+
+    [ADD_ENTITY](state, { path, value }) {
+      get(state, path).push(value);
     },
-    [SET_SIZE]({ pizzaConstruct }, id) {
-      pizzaConstruct.sizeId = id;
+
+    [UPDATE_ENTITY](state, { path, value }) {
+      const targetState = get(state, path);
+      const index = targetState.findIndex(({ id }) => id === value.id);
+      ~index && assign(targetState[index], value);
     },
-    [SET_SAUCE]({ pizzaConstruct }, id) {
-      pizzaConstruct.sauceId = id;
-    },
-    [SET_INGREDIENT](state, id) {
-      state.pizzaConstruct.ingredients.push({
-        ingredientId: id,
-        quantity: 1,
+
+    [DELETE_ENTITY](state, { path, id }) {
+      remove(get(state, path), function (item) {
+        return item.id === id;
       });
-    },
-    [UPDATE_INGREDIENT]({ pizzaConstruct }, { id, count }) {
-      pizzaConstruct.ingredients.find(
-        (item) => item.ingredientId === id
-      ).quantity = count;
-    },
-    [DELETE_INGREDIENT]({ pizzaConstruct }, id) {
-      pizzaConstruct.ingredients = pizzaConstruct.ingredients.filter(
-        (item) => item.ingredientId !== id
-      );
-    },
-    [SET_PRICE]({ pizzaConstruct }, price) {
-      pizzaConstruct.price = price;
-    },
-    [CHANGE_PIZZA](state, index) {
-      state.pizzaConstruct = cloneDeep(
-        this.getters.getPizzaFromCartByIndex(index)
-      );
-    },
-    [RESET_CONSTRUCT](state) {
-      Object.assign(state, setupState());
+      set(state, path, [...get(state, path)]);
     },
   },
   actions: {
-    async init({ dispatch }) {
+    async init({ rootState, dispatch }) {
       dispatch("Builder/query");
       dispatch("Cart/query");
+      if (rootState.Auth.isAuthenticated) {
+        dispatch("Profile/query");
+        dispatch("Orders/query");
+      }
     },
   },
   plugins: [VuexPlugins],

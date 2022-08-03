@@ -64,6 +64,9 @@ export default {
         email: this.email,
         password: this.password,
       });
+      // Чтобы появились адреса
+      await this.$store.dispatch("Profile/query");
+      await this.$store.dispatch("Cart/query");
       // После успешной авторизации отправляем пользователя на главную страницу.
       await this.$router.push("/");
     },

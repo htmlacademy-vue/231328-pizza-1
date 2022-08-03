@@ -1,32 +1,20 @@
-import jsonMisc from "@/static/misc.json";
-import Vue from "vue";
+/* eslint-disable */
 import router from "@/router";
-
-import { cloneDeep } from "lodash";
-import {
-  ADD_TO_CART,
-  REMOVE_FROM_CART,
-  UPDATE_PIZZA_QUATITY,
-  SET_MISC,
-  UPDATE_MISC,
-  SET_PHONE,
-  SET_ADDRESS,
-  RESET_CART,
-} from "@/store/mutation-types";
-
-import { normalizeMisc } from "@/common/helpers";
+import { SET_ENTITY } from "@/store/mutation-types";
 
 const setupState = () => ({
-  userId: null,
-  phone: null,
-  address: {
-    street: null,
-    building: null,
-    flat: null,
-    comment: null,
-  },
-  pizzas: [],
-  misc: [],
+    userId: null,
+    phone: null,
+    isFormValid: false,
+    isPickup: false,
+    address: {
+      street: null,
+      building: null,
+      flat: null,
+      comment: null,
+    },
+    pizzas: [],
+    misc: [],
 });
 
 export default {
@@ -34,65 +22,108 @@ export default {
   state: setupState(),
   getters: {
     isEmpty({ pizzas }) {
-      return Object.values(pizzas).length !== 0;
+      return Object.values(pizzas).length === 0;
     },
 
-    totalPrice(state) {
-      let pizzasPrice;
-      let miscPrice;
+    totalPrice({ pizzas, misc }, { getPizzasPrice, getMiscPrice }) {
+      return getPizzasPrice(pizzas) + getMiscPrice(misc);
+    },
 
-      pizzasPrice = state.pizzas.reduce((acc, curr) => {
+    getPizzasPrice: (state, getters, rootState, rootGetters) => (pizzas) => {
+      return pizzas.reduce((acc, curr) => {
+        return acc + rootGetters["Builder/getPizzaPrice"](curr) * curr.quantity;
+      }, 0);
+    },
+
+    getMiscPrice: () => (misc) => {
+      return misc.reduce((acc, curr) => {
         return acc + curr.price * curr.quantity;
       }, 0);
+    },
 
-      miscPrice = state.misc.reduce((acc, curr) => {
-        return acc + curr.price * curr.quantity;
-      }, 0);
-
-      return pizzasPrice + miscPrice;
-    },
-  },
-  mutations: {
-    [ADD_TO_CART](state, pizzaConstruct) {
-      state.pizzas = [...state.pizzas, cloneDeep(pizzaConstruct)];
-    },
-    [REMOVE_FROM_CART]({ pizzas }, { index }) {
-      pizzas.splice(index, 1);
-    },
-    [UPDATE_PIZZA_QUATITY]({ pizzas }, { index, count }) {
-      pizzas[index].quantity = count;
-    },
-    [SET_MISC](state, data) {
-      state.misc = data;
-    },
-    [UPDATE_MISC]({ misc }, { id, count }) {
-      Vue.set(
-        misc.find((item) => item.miscId === id),
-        "quantity",
-        count
-      );
-    },
-    [SET_PHONE](state, str) {
-      state.phone = str;
-    },
-    [SET_ADDRESS](state, obj) {
-      state.address = { ...obj };
-    },
-    [RESET_CART](state) {
-      Object.assign(state, setupState());
-    },
+    getIngredientsList:
+      (state, getters, rootState, { getEntityById }) =>
+      (ingredients) => {
+        let arr = [];
+        ingredients.forEach((ingredient) => {
+          arr.push(getEntityById("Builder.builder.ingredients#name", ingredient.ingredientId || ingredient.id));
+        });
+        return arr.join(", ");
+      },
   },
   actions: {
-    query({ commit }) {
-      commit(SET_MISC, normalizeMisc(jsonMisc));
+    async query({ commit, rootState }) {
+      // 1. Получили данные доп. товаров из API
+      const misc = await this.$api.misc.query();
+
+      // 2. Установили доп. товары прежде нормализовав
+      commit(
+        SET_ENTITY,
+        { path: "Cart.misc", value: misc },
+        { root: true } // Вызвать мутации которые зареганы вне модуля(namespaced: true) / в глобальном простианстве имен
+      );
+
+      if (rootState.Auth.isAuthenticated) {
+        // 3. Установили id пользователя
+        commit(
+          SET_ENTITY,
+          {
+            path: "Cart.userId",
+            value: rootState.Auth.user.id || null,
+          },
+          { root: true }
+        );
+
+        // 4. Установили телефон пользователя
+        commit(
+          SET_ENTITY,
+          {
+            path: "Cart.phone",
+            value: rootState.Auth.user.phone || null,
+          },
+          { root: true }
+        );
+      }
     },
-    resetCart({ commit }) {
-      commit(RESET_CART);
-      commit(SET_MISC, normalizeMisc(jsonMisc));
+
+    setupAddress({ commit }) {
+      commit(
+        SET_ENTITY,
+        {
+          path: "Cart.address",
+          value: setupState().address,
+        },
+        { root: true }
+      );
     },
-    submitOrder(context) {
-      context.dispatch("resetCart");
-      router.push("/success");
+
+    async submitOrder({ rootState, commit, dispatch }, deliveryType) {
+      if (deliveryType === "false") {
+        commit(
+          SET_ENTITY,
+          {
+            path: "Cart.address",
+            value: null,
+          },
+          { root: true }
+        );
+      }
+      try {
+        await this.$api.orders.post(rootState.Cart);
+        commit(
+          SET_ENTITY,
+          {
+            path: "Cart",
+            value: setupState(),
+          },
+          { root: true }
+        );
+        dispatch("query");
+        if (rootState.Auth.isAuthenticated) dispatch("Orders/query", "", { root: true });
+        router.push("/success");
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 };

@@ -8,6 +8,7 @@
       :type="type"
       :placeholder="placeholder"
       :required="required"
+      :disabled="disabled"
       v-on="inputListeners"
     />
   </label>
@@ -42,6 +43,10 @@ export default {
       default: "",
     },
     required: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },

@@ -9,11 +9,7 @@ const axiosInstance = axios.create({
 // добавляем централизованную обработку ошибок при получении ответа от сервера
 // Axios interceptors — единая точка входа, через которую проходят все axios-запросы и ответы от сервера.
 axiosInstance.interceptors.response.use(
-  (res) => {
-    const defaultMessage = "Данные успешно получены";
-    console.log(res?.response?.data?.error?.message || defaultMessage);
-    return res;
-  },
+  (res) => res,
   (e) => {
     const defaultMessage = "Возникла ошибка при выполнении запроса к серверу";
     console.log(e?.response?.data?.error?.message || defaultMessage);

@@ -18,7 +18,7 @@
             :min="0"
             :max="99"
             class="cart-list__counter"
-            @update:count="updateMisc(item.miscId, $event)"
+            @update:count="updateMisc(item, $event)"
           />
 
           <div class="additional-list__price">
@@ -33,7 +33,7 @@
 <script>
 import ItemCounter from "@/common/components/ItemCounter";
 import { mapState, mapMutations } from "vuex";
-import { UPDATE_MISC } from "@/store/mutation-types";
+import { UPDATE_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "CartAdditionalsSelector",
@@ -44,9 +44,16 @@ export default {
     ...mapState("Cart", ["misc"]),
   },
   methods: {
-    ...mapMutations("Cart", [UPDATE_MISC]),
-    updateMisc(id, count) {
-      this[UPDATE_MISC]({ id: id, count: count });
+    ...mapMutations([UPDATE_ENTITY]),
+
+    updateMisc(item, quantity) {
+      this[UPDATE_ENTITY]({
+        path: "Cart.misc",
+        value: {
+          ...item,
+          quantity,
+        },
+      });
     },
   },
 };

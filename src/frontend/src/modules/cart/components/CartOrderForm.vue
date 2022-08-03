@@ -3,10 +3,21 @@
     <div class="cart-form">
       <label class="cart-form__select">
         <span class="cart-form__label">Получение заказа:</span>
-        <select name="test" class="select" v-model="deleveryValue">
-          <option value="1">Заберу сам</option>
-          <option value="2">Новый адрес</option>
-          <option value="3" v-if="isAuthUser">Дом</option>
+        <select
+          name="test"
+          class="select"
+          v-model="deliveryType"
+          @change="setDelivery($event)"
+        >
+          <option :value="false">Заберу сам</option>
+          <option :value="true">Новый адрес</option>
+          <option
+            v-for="address of addresses"
+            :key="address.id"
+            :value="address.id"
+          >
+            {{ address.name }}
+          </option>
         </select>
       </label>
       <AppInput
@@ -14,29 +25,41 @@
         format="big"
         name="tel"
         placeholder="+7 999-999-99-99"
-        :value="this.$store.state.Cart.phone"
-        @input="setPhone($event)"
+        v-model="phone"
       />
+      <div class="cart-form__address" v-show="deliveryType">
+        <span class="cart-form__label">{{
+          Number.isInteger(deliveryType) ? "Доставим сюда:" : "Новый адрес:"
+        }}</span>
 
-      <div class="cart-form__address">
-        <span class="cart-form__label" v-show="showAddress">Новый адрес:</span>
-
-        <div class="cart-form__input" v-show="showAddress">
-          <AppInput title="Улица*" name="street" v-model="address.street" />
+        <div class="cart-form__input">
+          <AppInput
+            title="Улица*"
+            name="street"
+            :disabled="Number.isInteger(deliveryType)"
+            v-model="street"
+            @input="validateAddress()"
+          />
         </div>
 
-        <div
-          class="cart-form__input cart-form__input--small"
-          v-show="showAddress"
-        >
-          <AppInput title="Дом*" name="house" v-model="address.building" />
+        <div class="cart-form__input cart-form__input--small">
+          <AppInput
+            title="Дом*"
+            name="house"
+            :disabled="Number.isInteger(deliveryType)"
+            v-model="house"
+            @input="validateAddress()"
+          />
         </div>
 
-        <div
-          class="cart-form__input cart-form__input--small"
-          v-show="showAddress"
-        >
-          <AppInput title="Квартира" name="apartment" v-model="address.flat" />
+        <div class="cart-form__input cart-form__input--small">
+          <AppInput
+            title="Квартира"
+            name="apartment"
+            :disabled="Number.isInteger(deliveryType)"
+            v-model="apartment"
+            @input="validateAddress()"
+          />
         </div>
       </div>
     </div>
@@ -44,51 +67,154 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { SET_PHONE, SET_ADDRESS } from "@/store/mutation-types";
-
-const setupAddress = {
-  building: "",
-  comment: null,
-  flat: null,
-  street: "",
-};
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+import { SET_ENTITY } from "@/store/mutation-types";
+import { validator } from "@/common/mixins";
 
 export default {
   name: "CartOrderForm",
-  data: () => ({
-    deleveryValue: "1",
-    address: setupAddress,
-  }),
-  computed: {
-    ...mapGetters("Auth", ["isAuthUser"]),
-
-    showAddress() {
-      return this.deleveryValue !== "1" ? true : false;
-    },
-
-    addressIsValid() {
-      return Object.values(this.address).every((item) => item !== "");
-    },
+  mixins: [validator],
+  data() {
+    return {
+      deliveryType: true, // Заберу сам / Новый адрес / Доставка
+      validations: {
+        street: {
+          error: "",
+          rules: ["required"],
+        },
+        building: {
+          error: "",
+          rules: ["required"],
+        },
+      },
+    };
   },
-  watch: {
-    address: {
-      deep: true,
-      handler() {
-        // Мутируем адрес в сторе если локальное состояние валидно(все поля заполнены)
-        // Точно не помню, но вроде делал для того, чтобы не вешать на каждый инпут евент
-        this.addressIsValid ? this[SET_ADDRESS](this.address) : "";
+  computed: {
+    ...mapState("Profile", ["addresses"]),
+    ...mapState("Cart", ["address"]),
+    ...mapGetters(["getEntityById"]),
+    ...mapGetters("Profile", ["getAddressById"]),
+
+    phone: {
+      get() {
+        return this.$store.state.Cart.phone;
+      },
+      set(value) {
+        this[SET_ENTITY]({
+          path: "Cart.phone",
+          value: value,
+        });
+      },
+    },
+
+    street: {
+      get() {
+        return this?.address?.street;
+      },
+      set(value) {
+        this[SET_ENTITY]({
+          path: "Cart.address.street",
+          value: value,
+        });
+      },
+    },
+
+    house: {
+      get() {
+        return this?.address?.building;
+      },
+      set(value) {
+        this[SET_ENTITY]({
+          path: "Cart.address.building",
+          value: value,
+        });
+      },
+    },
+
+    apartment: {
+      get() {
+        return this?.address?.flat;
+      },
+      set(value) {
+        this[SET_ENTITY]({
+          path: "Cart.address.flat",
+          value: value,
+        });
       },
     },
   },
   methods: {
-    ...mapMutations("Cart", [SET_PHONE, SET_ADDRESS]),
+    ...mapMutations([SET_ENTITY]),
+    ...mapActions("Cart", ["setupAddress"]),
 
-    setPhone(str) {
-      this[SET_PHONE](str);
+    setDelivery({ target }) {
+      if (target.value == "false") {
+        this[SET_ENTITY]({
+          path: "Cart.isFormValid",
+          value: true,
+        });
+        this[SET_ENTITY]({
+          path: "Cart.isPickup",
+          value: true,
+        });
+        return;
+      }
+
+      this[SET_ENTITY]({
+        path: "Cart.isPickup",
+        value: false,
+      });
+
+      if (this.getEntityById("Profile.addresses", target.value)) {
+        this[SET_ENTITY]({
+          path: "Cart.address",
+          value: this.getEntityById("Profile.addresses", target.value),
+        });
+        this[SET_ENTITY]({
+          path: "Cart.isFormValid",
+          value: true,
+        });
+        return;
+      }
+
+      this[SET_ENTITY]({
+        path: "Cart.isFormValid",
+        value: false,
+      });
+
+      this.setupAddress();
+    },
+
+    validateAddress() {
+      if (
+        !this.$validateFields(
+          { street: this.address.street, building: this.address.building },
+          this.validations
+        ) &&
+        this.deliveryType
+      ) {
+        this[SET_ENTITY]({
+          path: "Cart.isFormValid",
+          value: false,
+        });
+        return;
+      }
+
+      this[SET_ENTITY]({
+        path: "Cart.isFormValid",
+        value: true,
+      });
     },
   },
 };
 </script>
 
-<style></style>
+<style>
+.cart-form {
+  padding-bottom: 20px;
+}
+
+.cart-form__address {
+  margin-bottom: -20px;
+}
+</style>

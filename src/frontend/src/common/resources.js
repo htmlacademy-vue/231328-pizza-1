@@ -4,6 +4,7 @@ export default {
   INGREDIENTS_API: "ingredients",
   SAUCES_API: "sauces",
   SIZES_API: "sizes",
+  MISC_API: "misc",
   AUTH_API: "auth",
   ORDERS_API: "orders",
   ADDRESSES_API: "addresses",

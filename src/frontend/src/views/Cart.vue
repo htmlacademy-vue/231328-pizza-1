@@ -5,7 +5,7 @@
         <div class="cart__title">
           <h1 class="title title--big">Корзина</h1>
         </div>
-        <template v-if="isEmpty">
+        <template v-if="!isEmpty">
           <CartPizzasList />
           <CartAdditionalsSelector />
           <CartOrderForm />
@@ -15,7 +15,7 @@
         </div>
       </div>
     </main>
-    <section v-if="isEmpty" class="footer">
+    <section v-if="!isEmpty" class="footer">
       <div class="footer__more">
         <router-link class="button button--border button--arrow" to="/">
           Хочу еще одну
@@ -29,9 +29,12 @@
       </div>
 
       <div class="footer__submit">
-        <AppButton @click="submitOrder()">Оформить заказ</AppButton>
+        <AppButton @click="submitOrder()" :disabled="!isFormValid"
+          >Оформить заказ</AppButton
+        >
       </div>
     </section>
+    <router-view />
   </form>
 </template>
 
@@ -39,7 +42,7 @@
 import CartAdditionalsSelector from "@/modules/cart/components/CartAdditionalsSelector";
 import CartOrderForm from "@/modules/cart/components/CartOrderForm";
 import CartPizzasList from "@/modules/cart/components/CartPizzasList";
-import { mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Cart",
@@ -49,6 +52,7 @@ export default {
     CartPizzasList,
   },
   computed: {
+    ...mapState("Cart", ["isFormValid"]),
     ...mapGetters("Cart", ["isEmpty", "totalPrice"]),
   },
   methods: {

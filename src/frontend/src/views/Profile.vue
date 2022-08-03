@@ -8,28 +8,28 @@
       <ProfileUserData />
 
       <ProfileUserAddresses
+        v-show="formType == false"
         v-for="address of addresses"
         :key="address.id"
         :address="address"
-        :formShape="formShape"
         @onEdit="editAddress($event)"
       />
 
       <ProfileUserFormAddress
         ref="ProfileUserFormAddress"
-        v-if="formShape"
-        @onSave="choicerAddressMethod($event)"
+        v-if="formType"
+        @onSave="saveAddress($event)"
         @onDelete="deleteAddress($event)"
-        :formShape="formShape"
+        :formType="formType"
         :addressToEdit="addressToEdit"
       />
 
       <div class="layout__button">
         <button
-          v-if="!formShape"
+          v-if="!formType"
           type="button"
           class="button button--border"
-          @click="formShape = 'create'"
+          @click="formType = 'post'"
         >
           Добавить новый адрес
         </button>
@@ -43,6 +43,8 @@ import ProfileUserData from "@/modules/profile/ProfileUserData";
 import ProfileUserAddresses from "@/modules/profile/ProfileUserAddresses";
 import ProfileUserFormAddress from "@/modules/profile/ProfileUserFormAddress";
 
+import { mapActions, mapState } from "vuex";
+
 export default {
   name: "Profile",
   components: {
@@ -51,26 +53,22 @@ export default {
     ProfileUserFormAddress,
   },
   data: () => ({
-    formShape: false,
-    addresses: null,
+    formType: false,
     addressToEdit: null,
   }),
-  created() {
-    this.queryAddresses();
+  computed: {
+    ...mapState("Profile", ["addresses"]),
   },
   methods: {
-    choicerAddressMethod(address) {
-      // Если форма в состоянии создания адреса – post-api, иначе – put-api
-      // сreate когда жмем по кнопке создания, edit емитим из компоненты
-      // ProfileUserFormAddress в метод editAddress()
-      this.formShape === "create"
-        ? this.postAddress(address)
-        : this.putAddress(address);
-    },
+    ...mapActions("Profile", {
+      addressPost: "post",
+      addressPut: "put",
+      addressDelete: "delete",
+    }),
 
     editAddress(address) {
-      // 1. Привели форму в состояние редактирования адреса
-      this.formShape = "edit";
+      // 1. Привели форму в состояние обновление адреса
+      this.formType = "put";
       // 2. Передали компоненте формы адрес и отобразили в инпутах
       this.addressToEdit = address;
       // 3. Плавно проскроллили к компоненте формы
@@ -79,63 +77,24 @@ export default {
           behavior: "smooth",
         });
       }, 0);
-      // 4. Отфильтррвали редактируемый адрес из списка адресов
-      this.addresses = this.addresses.filter((item) => item.id !== address.id);
     },
 
-    async queryAddresses() {
-      try {
-        this.addresses = await this.$api.addresses.query();
-      } catch (error) {
-        console.log(error);
-      }
+    saveAddress(address) {
+      // Если форма в состоянии создания адреса – post-запрос, иначе – put-запрос
+      // formType=post когда жмем по кнопке создания, put емитим из компоненты
+      this.formType === "post"
+        ? this.addressPost(address)
+        : this.addressPut(address);
+
+      this.formType = false;
+      this.addressToEdit = null;
     },
 
-    async postAddress(address) {
-      try {
-        // 1. Сделали post-запрос к API
-        this.$api.addresses.post(address);
-        // 2. Скрыли форму
-        this.formShape = false;
-        // 3. Делаем get запрос к API, а не просто push(address) в хранилище компононеты,
-        //    потому что новосозданный адрес при редактировании и сохранение(PUT) даст ошибку, тк
-        //    id его не будет известен
-        await this.queryAddresses(); // QESTION: Нежно ли здесь ждать?
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    deleteAddress(id) {
+      this.addressDelete(id);
 
-    async putAddress(address) {
-      try {
-        // 1. Сделали put-запрос к API
-        this.$api.addresses.put(address);
-        // 2. Скрыли форму
-        this.formShape = false;
-        // 3. Добавили адрес в хранилище компоненты
-        this.addresses.push(address);
-        // 4. Очистили в текущей компоненте редактируемый адрес передаваемый в форму
-        //    Так как если после сохранения редактируемого адреса попробовать
-        //    создать новый, отобразяться данные редактируемого до этого
-        this.addressToEdit = null;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async deleteAddress(id) {
-      try {
-        // 1. Сделали delete-запрос к API
-        this.$api.addresses.delete(id);
-        // 2. Скрыли форму
-        this.formShape = false;
-        // 2.1 Удаляемый адрес уже убран из списка адресов компоненты в editAddress()
-        // 3. Очищаем редактируемый адрес,
-        //    иначе при попытке создать следом новый в нем будут данные удаленного
-        this.addressToEdit = null;
-      } catch (error) {
-        console.log(error);
-      }
+      this.formType = false;
+      this.addressToEdit = null;
     },
   },
 };

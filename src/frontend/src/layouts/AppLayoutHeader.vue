@@ -11,7 +11,7 @@
       </router-link>
     </div>
     <div class="header__cart">
-      <router-link to="cart">{{ totalPrice }} ₽</router-link>
+      <router-link to="cart">{{ isEmpty ? 0 : totalPrice }} ₽</router-link>
     </div>
     <div class="header__user">
       <template v-if="isAuthenticated">
@@ -62,7 +62,7 @@ export default {
   name: "AppLayoutHeader",
   computed: {
     ...mapState("Auth", ["isAuthenticated", "user"]),
-    ...mapGetters("Cart", ["totalPrice"]),
+    ...mapGetters("Cart", ["totalPrice", "isEmpty"]),
   },
   methods: {
     ...mapActions("Auth", {

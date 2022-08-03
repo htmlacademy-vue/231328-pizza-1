@@ -3,19 +3,15 @@ import { SET_ENTITY } from "../mutation-types.js";
 export default {
   namespaced: true,
   state: {
-    isAuthenticated: false, // авторизован ли пользователь
-    user: null, // здесь храним авторизованного пользователя
+    isAuthenticated: false,
+    user: null,
   },
   getters: {
     // геттер-функция для получения параметра по его названию из объекта user
     getUserAttribute: (state) => (attr) => state.user ? state.user[attr] : "",
+
     isAuthUser({ user }) {
       return user;
-    },
-  },
-  mutations: {
-    [SET_ENTITY](state, { entity, value }) {
-      state[entity] = value;
     },
   },
   actions: {
@@ -42,16 +38,24 @@ export default {
       // Обновляем заголовок авторизации в axios (по факту очищаем его)
       this.$api.auth.setAuthHeader();
       // Указываем, что пользователь не авторизован, и очищаем объект пользователя
-      commit(SET_ENTITY, { entity: "isAuthenticated", value: false });
-      commit(SET_ENTITY, { entity: "user", value: null });
+      commit(
+        SET_ENTITY,
+        { path: "Auth.isAuthenticated", value: false },
+        { root: true }
+      );
+      commit(SET_ENTITY, { path: "Auth.user", value: null }, { root: true });
     },
 
     // Получаем данные авторизованного пользователя
     async getMe({ commit, dispatch }) {
       try {
         const data = await this.$api.auth.getMe();
-        commit(SET_ENTITY, { entity: "isAuthenticated", value: true });
-        commit(SET_ENTITY, { entity: "user", value: data });
+        commit(
+          SET_ENTITY,
+          { path: "Auth.isAuthenticated", value: true },
+          { root: true }
+        );
+        commit(SET_ENTITY, { path: "Auth.user", value: data }, { root: true });
       } catch {
         // Если токен авторизации невалиден, или мы не смогли получить
         // данные пользователя по другой причине, делаем логаут без запроса на логаут на сервер.
