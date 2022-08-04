@@ -13,10 +13,18 @@
           <h2>{{ pizza.name }}</h2>
           <ul>
             <li>
-              {{ getSizeById(pizza.sizeId).name }},
-              {{ getDoughDescription(pizza.doughId) }}
+              {{ getEntityById("Builder.builder.sizes#name", pizza.sizeId) }},
+              {{
+                getEntityById(
+                  "Builder.builder.dough#connotation",
+                  pizza.doughId
+                )
+              }}
             </li>
-            <li>Соус: {{ getSauceById(pizza.sauceId).name }}</li>
+            <li>
+              Соус:
+              {{ getEntityById("Builder.builder.sauces#name", pizza.sauceId) }}
+            </li>
             <li>Начинка: {{ getIngredientsList(pizza.ingredients) }}</li>
           </ul>
         </div>
@@ -28,18 +36,18 @@
         :min="0"
         :max="99"
         class="cart-list__counter"
-        @update:count="[updateQuantity(index, $event), checkPizzasQuantity()]"
+        @update:count="updateQuantity(pizza, $event)"
       />
 
       <div class="cart-list__price">
-        <b>{{ pizza.price * pizza.quantity }} ₽</b>
+        <b>{{ getPizzaPrice(pizza) * pizza.quantity }} ₽</b>
       </div>
 
       <div class="cart-list__button">
         <button
           type="button"
           class="cart-list__edit"
-          @click="changePizza(index)"
+          @click="changePizza(pizza)"
         >
           Изменить
         </button>
@@ -50,11 +58,11 @@
 
 <script>
 import ItemCounter from "@/common/components/ItemCounter";
-import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 import {
-  REMOVE_FROM_CART,
-  UPDATE_PIZZA_QUATITY,
-  CHANGE_PIZZA,
+  SET_ENTITY,
+  UPDATE_ENTITY,
+  DELETE_ENTITY,
 } from "@/store/mutation-types";
 
 export default {
@@ -64,44 +72,40 @@ export default {
   },
   computed: {
     ...mapState("Cart", ["pizzas"]),
-    ...mapGetters("Builder", [
-      "getDoughById",
-      "getSizeById",
-      "getSauceById",
-      "getIngredientById",
-    ]),
-    ...mapGetters("Cart", ["isEmpty"]),
+    ...mapGetters(["getEntityById"]),
+    ...mapGetters("Builder", ["getPizzaPrice"]),
+    ...mapGetters("Cart", ["getIngredientsList"]),
   },
   methods: {
-    ...mapMutations("Cart", [UPDATE_PIZZA_QUATITY, REMOVE_FROM_CART]),
-    ...mapMutations([CHANGE_PIZZA]),
+    ...mapMutations([SET_ENTITY, UPDATE_ENTITY, DELETE_ENTITY]),
 
-    ...mapActions("Cart", {
-      resetCart: "resetCart",
-    }),
+    updateQuantity(pizza, quantity) {
+      if (quantity > 0) {
+        this[UPDATE_ENTITY]({
+          path: "Cart.pizzas",
+          value: { ...pizza, quantity },
+        });
+      } else {
+        this[DELETE_ENTITY]({
+          path: "Cart.pizzas",
+          id: pizza.id,
+        });
+      }
+    },
 
-    getDoughDescription(id) {
-      return this.getDoughById(id).name == "Тонкое"
-        ? "на тонком тесте"
-        : "на толстом тесте";
-    },
-    getIngredientsList(ingredients) {
-      return ingredients
-        .map((item) => this.getIngredientById(item.ingredientId).name)
-        .join(", ");
-    },
-    updateQuantity(index, count) {
-      count > 0
-        ? this[UPDATE_PIZZA_QUATITY]({ index, count })
-        : this[REMOVE_FROM_CART]({ index });
-    },
-    changePizza(index) {
+    changePizza(pizza) {
+      // 1. Делаем переход на страницу настройки пиццы
       this.$router.push({ name: "Index" });
-      this[CHANGE_PIZZA](index);
-      this[REMOVE_FROM_CART](index);
-    },
-    checkPizzasQuantity() {
-      !this.isEmpty && this.resetCart();
+      // 2. Мутируем конструктор
+      this[SET_ENTITY]({
+        path: "Builder.construct",
+        value: pizza,
+      });
+      // 3. Удаляем из корзины
+      this[DELETE_ENTITY]({
+        path: "Cart.pizzas",
+        id: pizza.id,
+      });
     },
   },
 };

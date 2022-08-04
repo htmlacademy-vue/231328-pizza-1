@@ -1,38 +1,42 @@
-import { DOUGH, SIZES, SAUCES, INGREDIENTS, MISC } from "@/common/constants";
+import resources from "@/common/resources";
+import {
+  AuthApiService,
+  CrudApiService,
+  BuilderApiService,
+  OrdersApiService,
+} from "@/services/api.service";
 
-/*eslint-disable */
+// setAuth принимает store в качестве аргумента для того, чтобы задать
+// токен авторизации и вызвать действие для получения профиля пользователя.
+// isAuthenticated переводим в true в действии сразу же после получения данных о пользователе.
+export const setAuth = (store) => {
+  store.$api.auth.setAuthHeader();
+  store.dispatch("Auth/getMe");
+};
+
 /*
- * Объедение двух массивов объектов по id
+ * Вернет объект, в нем объекты с методами для каждого вида api-данных
+ * Далее в vue/vuexPlugins.js мы их добавим в глобальную область видимости
+ *
+ * В resources мы храним названия api данных
+ *
+ * Например, в dough запишем объект с методами для получения размеров пиццы
+ * $api.dough
  */
-const normalizerById = (first, second) => {
-  return Object.values(first.reduce((acc, { id: id, ...n }) => {
-    Object.entries(n).forEach(([k, v]) => acc[id][k] = (acc[id][k] || [v] == Number() ? Number() : "") + v);
-    return acc;
-  }, Object.fromEntries(second.map(n => [n.id, { ...n }]))));
-};
-/*eslint-enable */
+export const createResources = () => {
+  return {
+    // Там class-функции, через new присваиваем копию (api.service.js)
+    [resources.DOUGH_API]: new BuilderApiService(resources.DOUGH_API),
+    [resources.INGREDIENTS_API]: new BuilderApiService(
+      resources.INGREDIENTS_API
+    ),
+    [resources.SAUCES_API]: new BuilderApiService(resources.SAUCES_API),
+    [resources.SIZES_API]: new BuilderApiService(resources.SIZES_API),
+    [resources.MISC_API]: new BuilderApiService(resources.MISC_API),
 
-export const normalizeDough = (dough) => {
-  return normalizerById(DOUGH, dough);
-};
+    [resources.AUTH_API]: new AuthApiService(resources.AUTH_API),
 
-export const normalizeSizes = (sizes) => {
-  return normalizerById(SIZES, sizes);
-};
-
-export const normalizeSauces = (sauces) => {
-  return normalizerById(SAUCES, sauces);
-};
-
-export const normalizeIngredients = (ingredients) => {
-  return normalizerById(INGREDIENTS, ingredients);
-};
-
-export const normalizeMisc = (misc) => {
-  let arr = normalizerById(MISC, misc);
-  arr.map((item) => {
-    item.miscId = item.id;
-    delete item.id;
-  });
-  return arr;
+    [resources.ORDERS_API]: new OrdersApiService(resources.ORDERS_API),
+    [resources.ADDRESSES_API]: new CrudApiService(resources.ADDRESSES_API),
+  };
 };

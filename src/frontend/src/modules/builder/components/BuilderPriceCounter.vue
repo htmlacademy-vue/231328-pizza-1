@@ -1,39 +1,34 @@
 <template>
   <div class="content__result">
-    <p>Итого: {{ getPizzaPrice }} ₽</p>
-    <button
-      type="button"
-      class="button"
-      :disabled="!constructIsValid"
-      @click="addToCart"
-    >
+    <!-- Смотри BuilderPizzaView.vue зачем нужен BuilderIsReady -->
+    <p>Итого: {{ BuilderIsReady && getPizzaPrice(construct) }} ₽</p>
+    <AppButton type="button" :disabled="!constructIsValid" @click="addToCart">
       Готовьте!
-    </button>
+    </AppButton>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapMutations } from "vuex";
-import {
-  ADD_TO_CART,
-  SET_PRICE,
-  RESET_CONSTRUCT,
-} from "@/store/mutation-types";
+import { mapState, mapGetters, mapMutations, mapActions } from "vuex";
+import { SET_ENTITY, ADD_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "BuilderPriceCounter",
   computed: {
-    ...mapState(["pizzaConstruct"]),
-    ...mapGetters(["constructIsValid", "getPizzaPrice"]),
+    ...mapState("Builder", ["BuilderIsReady", "construct"]),
+    ...mapGetters("Builder", ["constructIsValid", "getPizzaPrice"]),
   },
   methods: {
-    ...mapMutations("Cart", [ADD_TO_CART]),
-    ...mapMutations([SET_PRICE, RESET_CONSTRUCT]),
+    ...mapMutations([SET_ENTITY, ADD_ENTITY]),
+    ...mapActions("Builder", ["resetConstruct", "addToCart"]),
 
     addToCart() {
-      this[SET_PRICE](this.getPizzaPrice);
-      this[ADD_TO_CART](this.pizzaConstruct);
-      this[RESET_CONSTRUCT]();
+      this[ADD_ENTITY]({
+        path: "Cart.pizzas",
+        value: this.construct,
+      });
+
+      this.resetConstruct();
     },
   },
 };

@@ -6,12 +6,12 @@
         <div class="ingredients__sauce">
           <p>Основной соус:</p>
           <RadioButton
-            v-for="item of sauces"
+            v-for="item of builder.sauces"
             :key="item.id"
             :title="item.name"
             name="sauce"
             :value="item.price"
-            :checked="pizzaConstruct.sauceId === item.id"
+            :checked="construct.sauceId === item.id"
             class="ingredients__input"
             @onChange="setSauce(item.id)"
           />
@@ -22,15 +22,13 @@
 
           <ul class="ingredients__list">
             <li
-              v-for="item of ingredients"
+              v-for="item of builder.ingredients"
               :key="item.id"
               class="ingredients__item"
             >
               <AppDrag
                 :transfer-data="item"
-                :draggable="
-                  getIngredientQuantityById(item.id) < MAX_INGREDIENT_QUANTITY
-                "
+                :draggable="(getCount(item.id) || 0) < MAX_INGREDIENT_QUANTITY"
               >
                 <span class="filling" :class="`filling--${item.value}`">
                   {{ item.name }}
@@ -38,7 +36,7 @@
               </AppDrag>
               <ItemCounter
                 :name="item.value"
-                :count="getIngredientQuantityById(item.id)"
+                :count="getCount(item.id) || 0"
                 :min="MIN_INGREDIENT_QUANTITY"
                 :max="MAX_INGREDIENT_QUANTITY"
                 class="ingredients__counter"
@@ -62,10 +60,10 @@ import {
 } from "@/common/constants";
 import { mapState, mapMutations, mapGetters } from "vuex";
 import {
-  SET_SAUCE,
-  SET_INGREDIENT,
-  UPDATE_INGREDIENT,
-  DELETE_INGREDIENT,
+  SET_ENTITY,
+  ADD_ENTITY,
+  UPDATE_ENTITY,
+  DELETE_ENTITY,
 } from "@/store/mutation-types";
 
 export default {
@@ -80,31 +78,42 @@ export default {
     MAX_INGREDIENT_QUANTITY,
   }),
   computed: {
-    ...mapState("Builder", ["sauces", "ingredients"]),
-    ...mapState(["pizzaConstruct"]),
-
-    ...mapGetters(["getIngredientQuantityById"]),
+    ...mapState("Builder", ["builder", "construct"]),
+    ...mapGetters(["getEntityById", "getAttrById"]),
   },
   methods: {
-    ...mapMutations([
-      SET_SAUCE,
-      SET_INGREDIENT,
-      UPDATE_INGREDIENT,
-      DELETE_INGREDIENT,
-    ]),
+    ...mapMutations([SET_ENTITY, ADD_ENTITY, UPDATE_ENTITY, DELETE_ENTITY]),
 
-    setSauce(id) {
-      this[SET_SAUCE](id);
+    getCount(id) {
+      return this.getEntityById("Builder.construct.ingredients#quantity", id);
     },
 
-    updateIngredients(id, count) {
-      if (count > 0) {
-        this.getIngredientQuantityById(id)
-          ? this[UPDATE_INGREDIENT]({ id: id, count: count })
-          : this[SET_INGREDIENT](id);
+    setSauce(id) {
+      this[SET_ENTITY]({
+        path: "Builder.construct.sauceId",
+        value: id,
+      });
+    },
+
+    updateIngredients(id, quantity) {
+      if (quantity > 0) {
+        if (this.getCount(id)) {
+          this[UPDATE_ENTITY]({
+            path: "Builder.construct.ingredients",
+            value: { id, quantity },
+          });
+        } else {
+          this[ADD_ENTITY]({
+            path: "Builder.construct.ingredients",
+            value: { id, quantity },
+          });
+        }
         return;
       }
-      this[DELETE_INGREDIENT](id);
+      this[DELETE_ENTITY]({
+        path: "Builder.construct.ingredients",
+        id,
+      });
     },
   },
 };

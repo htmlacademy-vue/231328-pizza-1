@@ -4,14 +4,14 @@
       <template #title>Выберите тесто</template>
       <template #content>
         <SelectorItem
-          v-for="item of dough"
+          v-for="item of builder.dough"
           :key="item.id"
           :id="item.id"
           :title="item.name"
           :description="item.description"
           name="dough"
           :value="item.value"
-          :checked="pizzaConstruct.doughId === item.id"
+          :checked="construct.doughId === item.id"
           class="dough__input"
           :class="`dough__input--${item.value}`"
           @onChange="setDough(item.id)"
@@ -24,7 +24,7 @@
 <script>
 import SelectorItem from "@/common/components/SelectorItem";
 import { mapState, mapMutations } from "vuex";
-import { SET_DOUGH } from "@/store/mutation-types";
+import { SET_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "BuilderDoughSelector",
@@ -32,14 +32,16 @@ export default {
     SelectorItem,
   },
   computed: {
-    ...mapState("Builder", ["dough"]),
-    ...mapState(["pizzaConstruct"]),
+    ...mapState("Builder", ["builder", "construct"]),
   },
   methods: {
-    ...mapMutations([SET_DOUGH]),
+    ...mapMutations([SET_ENTITY]),
 
     setDough(id) {
-      this[SET_DOUGH](id);
+      this[SET_ENTITY]({
+        path: "Builder.construct.doughId",
+        value: id,
+      });
     },
   },
 };

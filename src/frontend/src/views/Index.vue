@@ -10,20 +10,15 @@
 
         <BuilderIngredientsSelector />
         <div class="content__pizza">
-          <label class="input">
-            <span class="visually-hidden">Название пиццы</span>
-            <input
-              type="text"
-              name="pizza_name"
-              placeholder="Введите название пиццы"
-              :value="pizzaConstruct.name"
-              @input="setName($event.target.value)"
-            />
+          <AppInput
+            name="pizza_name"
+            placeholder="Введите название пиццы"
+            v-model="pizzaName"
+          />
 
-            <BuilderPizzaView />
+          <BuilderPizzaView />
 
-            <BuilderPriceCounter />
-          </label>
+          <BuilderPriceCounter />
         </div>
       </div>
     </form>
@@ -32,18 +27,13 @@
 </template>
 
 <script>
-import miscData from "@/static/misc.json";
-import userData from "@/static/user.json";
-
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector";
 import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelector";
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector";
 import BuilderPizzaView from "@/modules/builder/components/BuilderPizzaView";
 import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounter";
-
-import { mapMutations, mapState } from "vuex";
-
-import { SET_NAME } from "@/store/mutation-types";
+import { mapGetters, mapMutations, mapState } from "vuex";
+import { SET_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "Index",
@@ -54,19 +44,30 @@ export default {
     BuilderPizzaView,
     BuilderPriceCounter,
   },
-  data: () => ({
-    miscData,
-    userData,
-  }),
+  data: () => ({}),
   computed: {
-    ...mapState(["pizzaConstruct"]),
+    ...mapState("Builder", ["construct"]),
+    ...mapGetters(["getEntity", "getEntityById"]),
+
+    // Вызов мутации с v-model
+    // TODO: Чекнуть на решение получше, разобрать логику работы
+    getName() {
+      return this.$store.state.Builder.construct.name;
+    },
+    pizzaName: {
+      get() {
+        return this.construct.name;
+      },
+      set(name) {
+        this[SET_ENTITY]({
+          path: "Builder.construct.name",
+          value: name,
+        });
+      },
+    },
   },
   methods: {
-    ...mapMutations([SET_NAME]),
-
-    setName(name) {
-      this[SET_NAME](name);
-    },
+    ...mapMutations([SET_ENTITY]),
   },
 };
 </script>

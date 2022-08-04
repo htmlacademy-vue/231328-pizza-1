@@ -4,12 +4,12 @@
       <template #title>Выберите размер</template>
       <template #content>
         <SelectorItem
-          v-for="item of sizes"
+          v-for="item of builder.sizes"
           :key="item.id"
           :title="item.name"
           name="diameter"
           :value="item.value"
-          :checked="pizzaConstruct.sizeId === item.id"
+          :checked="construct.sizeId === item.id"
           class="diameter__input"
           :class="`diameter__input--${item.value}`"
           @onChange="setSize(item.id)"
@@ -22,7 +22,7 @@
 <script>
 import SelectorItem from "@/common/components/SelectorItem";
 import { mapState, mapMutations } from "vuex";
-import { SET_SIZE } from "@/store/mutation-types";
+import { SET_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "BuilderSizeSelector",
@@ -30,14 +30,17 @@ export default {
     SelectorItem,
   },
   computed: {
-    ...mapState("Builder", ["sizes"]),
-    ...mapState(["pizzaConstruct"]),
+    ...mapState("Builder", ["builder", "construct"]),
   },
   methods: {
-    ...mapMutations([SET_SIZE]),
+    ...mapMutations([SET_ENTITY]),
 
     setSize(id) {
-      this[SET_SIZE](id);
+      console.log();
+      this[SET_ENTITY]({
+        path: "Builder.construct.sizeId",
+        value: id,
+      });
     },
   },
 };
