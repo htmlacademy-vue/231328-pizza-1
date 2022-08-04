@@ -96,7 +96,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .ingredient-enter-active {
   transition: all 0.5s;
   transform: scale(1);
