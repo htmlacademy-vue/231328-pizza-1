@@ -9,15 +9,17 @@
        -->
       <div class="pizza" :class="BuilderIsReady && pizzaFoundationClass">
         <div class="pizza__wrapper">
-          <div
-            v-for="item in construct.ingredients"
-            :key="item.id"
-            class="pizza__filling"
-            :class="[
-              getClassByIngredient(item.id),
-              getClassByCount(item.quantity),
-            ]"
-          ></div>
+          <transition-group name="ingredient">
+            <div
+              v-for="item in construct.ingredients"
+              :key="item.id"
+              class="pizza__filling"
+              :class="[
+                getClassByIngredient(item.id),
+                getClassByCount(item.quantity),
+              ]"
+            ></div>
+          </transition-group>
         </div>
       </div>
     </AppDrop>
@@ -94,4 +96,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.ingredient-enter-active {
+  transition: all 0.5s;
+  transform: scale(1);
+}
+
+.ingredient-enter {
+  transform: scale(1.4);
+}
+</style>

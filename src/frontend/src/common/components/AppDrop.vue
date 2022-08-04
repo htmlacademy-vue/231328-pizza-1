@@ -1,7 +1,9 @@
 <template>
-  <div @drop.stop="onDrop" @dragover.prevent @dragenter.prevent>
-    <slot />
-  </div>
+  <transition name="slide">
+    <div @drop.stop="onDrop" @dragover.prevent @dragenter.prevent>
+      <slot />
+    </div>
+  </transition>
 </template>
 
 <script>
