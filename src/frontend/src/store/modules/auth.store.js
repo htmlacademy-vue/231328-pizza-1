@@ -21,7 +21,7 @@ export default {
       // 1. получаем с сервера токен и сохраняем его в LocalStorage
       this.$jwt.saveToken(data.token);
       // 2. Добавляем заголовок авторизации в axios
-      this.$api.auth.setAuthHeader();
+      await this.$api.auth.setAuthHeader();
       // 3. Отправляем запрос на получение профиля пользователя
       dispatch("getMe");
     },

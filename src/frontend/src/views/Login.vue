@@ -9,13 +9,13 @@
     <form @submit.prevent="login">
       <div class="sign-form__input">
         <AppInput
-          ref="email"
           title="E-mail"
           name="email"
           type="email"
           placeholder="example@mail.ru"
           v-model="email"
-          :required="true"
+          autofocus
+          required
         />
       </div>
 
@@ -41,12 +41,6 @@ export default {
     email: "",
     password: "",
   }),
-  mounted() {
-    // при входе на страницу ставим фокус на email-инпуте
-    // требуется указать элементу ref="email"
-    // Обращаемся к ref компонеты, а после к ref <ipnut>'a внутри уже самой компоненты
-    this.$refs.email.$refs.input.focus();
-  },
   methods: {
     async login() {
       // Если есть невалидное поле - не отправлять запрос на сервер.

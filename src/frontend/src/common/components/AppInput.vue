@@ -9,6 +9,7 @@
       :placeholder="placeholder"
       :required="required"
       :disabled="disabled"
+      :autofocus="autofocus"
       v-on="inputListeners"
     />
   </label>
@@ -43,6 +44,10 @@ export default {
       default: "",
     },
     required: {
+      type: Boolean,
+      default: false,
+    },
+    autofocus: {
       type: Boolean,
       default: false,
     },
