@@ -34,7 +34,9 @@
         >
       </div>
     </section>
-    <router-view />
+    <transition name="fade" appear>
+      <router-view />
+    </transition>
   </form>
 </template>
 

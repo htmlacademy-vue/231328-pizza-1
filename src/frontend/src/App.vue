@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <AppLayout>
-      <router-view />
+      <transition name="slide" :appear="isAnimated">
+        <router-view />
+      </transition>
     </AppLayout>
   </div>
 </template>
@@ -22,6 +24,11 @@ export default {
     this.$store.dispatch("init");
   },
   components: { AppLayout },
+  computed: {
+    isAnimated() {
+      return this.$route.name !== "Success" && this.$route.name !== "Login";
+    },
+  },
 };
 </script>
 
@@ -36,5 +43,26 @@ export default {
 .layout__default {
   display: flex;
   flex-direction: column;
+}
+
+.slide-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-enter {
+  opacity: 0;
+  transform: translateX(50%);
+}
+
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: all 0.5s linear;
+}
+
+.fade-enter-to {
+  opacity: 1;
 }
 </style>

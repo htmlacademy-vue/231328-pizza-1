@@ -22,7 +22,9 @@
         </div>
       </div>
     </form>
-    <router-view />
+    <transition name="fade" appear>
+      <router-view />
+    </transition>
   </main>
 </template>
 
