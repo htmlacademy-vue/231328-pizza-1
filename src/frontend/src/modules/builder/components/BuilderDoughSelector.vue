@@ -14,6 +14,7 @@
           :checked="construct.doughId === item.id"
           class="dough__input"
           :class="`dough__input--${item.value}`"
+          data-test="dough-item"
           @onChange="setDough(item.id)"
         />
       </template>

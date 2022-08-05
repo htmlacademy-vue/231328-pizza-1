@@ -1,6 +1,9 @@
 <template>
+  <!-- КОММЕНТАРИИ ДЛЯ ТЕСТА __tests__/AppInput.spec.js -->
+  <!-- 1️⃣ Тест динамического класса -->
   <label :class="['input', format == 'big' && 'input--big-label']">
     <span v-if="title">{{ title }}</span>
+    <!-- 2️⃣ Тест value -->
     <input
       ref="input"
       :value="value"
@@ -59,6 +62,7 @@ export default {
   computed: {
     // Передаем все слушатели событий на компоненте
     // https://ru.vuejs.org/v2/guide/components-custom-events.html#Подписка-на-нативные-события-в-компонентах
+    // 3️⃣ Тест эмита
     inputListeners: function () {
       var vm = this;
       // `Object.assign` объединяет объекты вместе, чтобы получить новый объект

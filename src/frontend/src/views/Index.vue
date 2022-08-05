@@ -34,7 +34,7 @@ import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelecto
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector";
 import BuilderPizzaView from "@/modules/builder/components/BuilderPizzaView";
 import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounter";
-import { mapGetters, mapMutations, mapState } from "vuex";
+import { mapMutations, mapState } from "vuex";
 import { SET_ENTITY } from "@/store/mutation-types";
 
 export default {
@@ -49,13 +49,7 @@ export default {
   data: () => ({}),
   computed: {
     ...mapState("Builder", ["construct"]),
-    ...mapGetters(["getEntity", "getEntityById"]),
 
-    // Вызов мутации с v-model
-    // TODO: Чекнуть на решение получше, разобрать логику работы
-    getName() {
-      return this.$store.state.Builder.construct.name;
-    },
     pizzaName: {
       get() {
         return this.construct.name;
