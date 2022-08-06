@@ -1,10 +1,6 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
-import {
-  generateMockStore,
-  createBuilder,
-  createConstruct,
-} from "@/store/mocks";
+import { generateMockStore, createBuilder } from "@/store/mocks";
 import BuilderPizzaView from "@/modules/builder/components/BuilderPizzaView";
 
 const localVue = createLocalVue();
@@ -22,7 +18,6 @@ describe("BuilderPizzaView", () => {
     store = generateMockStore();
     createComponent({ localVue, store });
     createBuilder(store);
-    createConstruct(store);
   });
 
   afterEach(() => {

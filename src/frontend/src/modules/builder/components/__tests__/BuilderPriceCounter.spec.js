@@ -1,10 +1,6 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
-import {
-  generateMockStore,
-  createBuilder,
-  createConstruct,
-} from "@/store/mocks";
+import { generateMockStore, createBuilder } from "@/store/mocks";
 import { ADD_ENTITY } from "@/store/mutation-types";
 import SheetCard from "@/common/components/SheetCard.vue";
 import AppButton from "@/common/components/AppButton.vue";
@@ -31,7 +27,6 @@ describe("BuilderPriceCounter", () => {
     store = generateMockStore(actions);
     createComponent({ localVue, store });
     createBuilder(store);
-    createConstruct(store);
   });
 
   afterEach(() => {

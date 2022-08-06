@@ -8,7 +8,7 @@ import {
 export default {
   namespaced: true,
   state: {
-    addresses: null,
+    addresses: [],
   },
   getters: {
     getAddressById: (state) => (id) =>

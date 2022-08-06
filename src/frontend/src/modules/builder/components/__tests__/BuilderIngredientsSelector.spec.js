@@ -1,10 +1,6 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
-import {
-  generateMockStore,
-  createBuilder,
-  createConstruct,
-} from "@/store/mocks";
+import { generateMockStore, createBuilder } from "@/store/mocks";
 import SheetCard from "@/common/components/SheetCard";
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector";
 
@@ -23,7 +19,6 @@ describe("BuilderIngredientsSelector", () => {
   beforeEach(() => {
     store = generateMockStore();
     createBuilder(store);
-    createConstruct(store);
     createComponent({ localVue, store });
   });
 
