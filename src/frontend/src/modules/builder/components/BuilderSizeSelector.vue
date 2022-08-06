@@ -12,6 +12,7 @@
           :checked="construct.sizeId === item.id"
           class="diameter__input"
           :class="`diameter__input--${item.value}`"
+          data-test="size-item"
           @onChange="setSize(item.id)"
         />
       </template>

@@ -14,6 +14,7 @@
             :checked="construct.sauceId === item.id"
             class="ingredients__input"
             @onChange="setSauce(item.id)"
+            data-test="sauce-item"
           />
         </div>
 
@@ -25,6 +26,7 @@
               v-for="item of builder.ingredients"
               :key="item.id"
               class="ingredients__item"
+              data-test="ingredient-item"
             >
               <AppDrag
                 :transfer-data="item"
@@ -41,6 +43,7 @@
                 :max="MAX_INGREDIENT_QUANTITY"
                 class="ingredients__counter"
                 @update:count="updateIngredients(item.id, $event)"
+                data-test="ingredient-item-counter"
               />
             </li>
           </ul>
@@ -96,6 +99,7 @@ export default {
     },
 
     updateIngredients(id, quantity) {
+      console.log("ak.emfzljseybfbou");
       if (quantity > 0) {
         if (this.getCount(id)) {
           this[UPDATE_ENTITY]({

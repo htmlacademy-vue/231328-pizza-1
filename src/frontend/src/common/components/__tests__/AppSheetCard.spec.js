@@ -21,7 +21,6 @@ describe("AppSheetCard", () => {
     wrapper.destroy();
   });
 
-  // Проверяем, что кнопка отображает контент дефолтного слота.
   it("renders out the slot title", () => {
     createComponent({ slots });
     expect(wrapper.html()).toContain(slots.title);

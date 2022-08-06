@@ -14,7 +14,7 @@ Vue.use(Vuex);
 
 const state = () => {};
 
-const getters = {
+export const getters = {
   // Получаем любую сущность по переданному пути
   getEntity: (state, getters, rootState) => (path) => {
     return get(rootState, path);
