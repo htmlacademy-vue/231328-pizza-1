@@ -34,7 +34,6 @@ describe("BuilderPriceCounter", () => {
   });
 
   it("is rendered", () => {
-    console.log(wrapper.html());
     expect(wrapper.exists()).toBeTruthy();
   });
 

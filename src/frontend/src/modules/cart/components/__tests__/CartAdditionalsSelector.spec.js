@@ -34,14 +34,12 @@ describe("CartAdditionalsSelector", () => {
   });
 
   it("is name rendered", () => {
-    console.log(wrapper.find('[data-test="misc-item-name"]').text());
     expect(
       wrapper.find('[data-test="misc-item-name"]').text().length
     ).toBeGreaterThan(1);
   });
 
   it("is price rendered", () => {
-    console.log(wrapper.find('[data-test="misc-item-price"]').text());
     expect(
       wrapper.find('[data-test="misc-item-price"]').text().length
     ).toBeGreaterThan(4);

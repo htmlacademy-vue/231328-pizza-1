@@ -25,7 +25,6 @@ describe("BuilderPizzaView", () => {
   });
 
   it("is rendered", async () => {
-    console.log(wrapper.html());
     expect(wrapper.exists()).toBeTruthy();
   });
 

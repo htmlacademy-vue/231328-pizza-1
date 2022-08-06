@@ -29,13 +29,10 @@ describe("CartOrderForm", () => {
   });
 
   it("is rendered", () => {
-    console.log(wrapper.html());
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it("is option name rendered", () => {
-    console.log(store.state.Profile.addresses);
-    console.log(wrapper.find('[data-test="delivery-option"]').text());
     expect(wrapper.find('[data-test="delivery-option"]').text()).toBe("Работа");
   });
 

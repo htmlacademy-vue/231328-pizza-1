@@ -2,7 +2,7 @@ import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
 // Создание тестового хранилища (см. доп инфу внтури)
 import { generateMockStore } from "@/store/mocks";
-import Index from "@/views/Index";
+import Cart from "@/views/Cart";
 import AppInput from "@/common/components/AppInput";
 import SheetCard from "@/common/components/SheetCard";
 import AppButton from "@/common/components/AppButton";
@@ -16,7 +16,7 @@ localVue.component("AppButton", AppButton);
 // Добавляем в него Vuex.
 localVue.use(Vuex);
 
-describe("Index", () => {
+describe("Cart", () => {
   // Заглушка вместо реального router-view
   const stubs = ["router-view"];
 
@@ -25,7 +25,7 @@ describe("Index", () => {
   let wrapper;
 
   const createComponent = (options) => {
-    wrapper = mount(Index, options);
+    wrapper = mount(Cart, options);
   };
 
   beforeEach(() => {

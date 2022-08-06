@@ -39,9 +39,9 @@
 </template>
 
 <script>
-import ProfileUserData from "@/modules/profile/ProfileUserData";
-import ProfileUserAddresses from "@/modules/profile/ProfileUserAddresses";
-import ProfileUserFormAddress from "@/modules/profile/ProfileUserFormAddress";
+import ProfileUserData from "@/modules/profile/components/ProfileUserData";
+import ProfileUserAddresses from "@/modules/profile/components/ProfileUserAddresses";
+import ProfileUserFormAddress from "@/modules/profile/components/ProfileUserFormAddress";
 
 import { mapActions, mapState } from "vuex";
 

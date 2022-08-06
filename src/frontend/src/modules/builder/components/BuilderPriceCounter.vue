@@ -27,7 +27,6 @@ export default {
     ...mapActions("Builder", ["resetConstruct"]),
 
     addToCart() {
-      console.log(123);
       this[ADD_ENTITY]({
         path: "Cart.pizzas",
         value: this.construct,

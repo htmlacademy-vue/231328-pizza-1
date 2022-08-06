@@ -12,7 +12,7 @@ import { SET_ENTITY, ADD_ENTITY } from "../mutation-types";
 import { DOUGH, SIZES, SAUCES, INGREDIENTS, MISC } from "@/common/constants";
 import pizza from "@/static/pizza.json";
 import misc from "@/static/misc.json";
-// import user from "@/static/user.json";
+import user from "@/static/user.json";
 import modules from "@/store/modules";
 import Vuex from "vuex";
 import VuexPlugins from "@/plugins/vuexPlugins";
@@ -32,7 +32,7 @@ let construct = {
   quantity: 1,
 };
 
-let address = {
+export let address = {
   id: 1,
   name: "Работа",
   street: "Невский",
@@ -105,5 +105,12 @@ export const createProfile = (store) => {
   store.commit(ADD_ENTITY, {
     path: "Profile.addresses",
     value: address,
+  });
+};
+
+export const createAuth = (store) => {
+  store.commit(SET_ENTITY, {
+    path: "Auth.user",
+    value: user,
   });
 };

@@ -99,7 +99,6 @@ export default {
     },
 
     updateIngredients(id, quantity) {
-      console.log("ak.emfzljseybfbou");
       if (quantity > 0) {
         if (this.getCount(id)) {
           this[UPDATE_ENTITY]({
