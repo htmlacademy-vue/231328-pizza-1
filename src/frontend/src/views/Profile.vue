@@ -85,14 +85,12 @@ export default {
       this.formType === "post"
         ? this.addressPost(address)
         : this.addressPut(address);
-
       this.formType = false;
       this.addressToEdit = null;
     },
 
     deleteAddress(id) {
       this.addressDelete(id);
-
       this.formType = false;
       this.addressToEdit = null;
     },

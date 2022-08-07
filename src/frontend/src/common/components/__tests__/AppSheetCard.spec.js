@@ -1,8 +1,8 @@
 import { shallowMount } from "@vue/test-utils";
 
-import AppSheetCard from "@/common/components/SheetCard";
+import AppCard from "@/common/components/AppCard";
 
-describe("AppSheetCard", () => {
+describe("AppCard", () => {
   const propsData = {
     className: "testClassName",
   };
@@ -14,7 +14,7 @@ describe("AppSheetCard", () => {
   let wrapper;
 
   const createComponent = (options) => {
-    wrapper = shallowMount(AppSheetCard, options);
+    wrapper = shallowMount(AppCard, options);
   };
 
   afterEach(() => {

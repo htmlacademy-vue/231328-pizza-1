@@ -28,20 +28,23 @@
 
 <script>
 export default {
-  name: "ItemCounter",
+  name: "AppCounter",
   props: {
     name: {
       type: String,
       reuired: true,
     },
+
     count: {
       type: Number,
       reuired: false,
     },
+
     min: {
       type: Number,
       default: 0,
     },
+
     max: {
       type: Number,
       default: 99,

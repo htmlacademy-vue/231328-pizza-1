@@ -26,34 +26,42 @@ export default {
       type: String,
       default: "",
     },
+
     format: {
       type: String,
       default: "",
     },
+
     value: {
       type: [String, Number],
       default: "",
     },
+
     name: {
       type: String,
       required: true,
     },
+
     type: {
       type: String,
       default: "text",
     },
+
     placeholder: {
       type: String,
       default: "",
     },
+
     required: {
       type: Boolean,
       default: false,
     },
+
     autofocus: {
       type: Boolean,
       default: false,
     },
+
     disabled: {
       type: Boolean,
       default: false,

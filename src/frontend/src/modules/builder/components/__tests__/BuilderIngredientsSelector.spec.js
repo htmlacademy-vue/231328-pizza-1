@@ -1,11 +1,11 @@
 import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
 import { generateMockStore, createBuilder } from "@/store/mocks";
-import SheetCard from "@/common/components/SheetCard";
+import AppCard from "@/common/components/AppCard";
 import BuilderIngredientsSelector from "@/modules/builder/components/BuilderIngredientsSelector";
 
 const localVue = createLocalVue();
-localVue.component("SheetCard", SheetCard);
+localVue.component("AppCard", AppCard);
 localVue.use(Vuex);
 
 describe("BuilderIngredientsSelector", () => {

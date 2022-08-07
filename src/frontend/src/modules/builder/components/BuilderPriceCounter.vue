@@ -31,7 +31,6 @@ export default {
         path: "Cart.pizzas",
         value: this.construct,
       });
-
       this.resetConstruct();
     },
   },

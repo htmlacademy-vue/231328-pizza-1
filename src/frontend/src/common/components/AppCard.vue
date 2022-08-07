@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "SheetCard",
+  name: "AppCard",
   props: {
     className: {
       type: String,

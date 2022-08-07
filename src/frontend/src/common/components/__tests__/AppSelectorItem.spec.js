@@ -1,8 +1,8 @@
 import { shallowMount } from "@vue/test-utils";
 
-import AppSelectorItem from "@/common/components/SelectorItem";
+import AppSelector from "@/common/components/AppSelector";
 
-describe("AppSelectorItem", () => {
+describe("AppSelector", () => {
   const propsData = {
     title: "textTitle",
     description: "TestDesc",
@@ -14,7 +14,7 @@ describe("AppSelectorItem", () => {
   let wrapper;
 
   const createComponent = (options) => {
-    wrapper = shallowMount(AppSelectorItem, options);
+    wrapper = shallowMount(AppSelector, options);
   };
 
   afterEach(() => {

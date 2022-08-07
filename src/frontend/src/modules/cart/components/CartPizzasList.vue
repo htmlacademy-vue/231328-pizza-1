@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <ItemCounter
+      <AppCounter
         :name="pizza.name"
         :count="pizza.quantity"
         :min="0"
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import ItemCounter from "@/common/components/ItemCounter";
+import AppCounter from "@/common/components/AppCounter";
 import { mapState, mapGetters, mapMutations } from "vuex";
 import {
   SET_ENTITY,
@@ -70,7 +70,7 @@ import {
 export default {
   name: "CartPizzasList",
   components: {
-    ItemCounter,
+    AppCounter,
   },
   computed: {
     ...mapState("Cart", ["pizzas"]),

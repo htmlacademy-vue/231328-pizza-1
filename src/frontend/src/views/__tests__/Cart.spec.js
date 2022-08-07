@@ -4,14 +4,14 @@ import Vuex from "vuex";
 import { generateMockStore } from "@/store/mocks";
 import Cart from "@/views/Cart";
 import AppInput from "@/common/components/AppInput";
-import SheetCard from "@/common/components/SheetCard";
+import AppCard from "@/common/components/AppCard";
 import AppButton from "@/common/components/AppButton";
 
 // Создаём локальный тестовый экземпляр Vue.
 const localVue = createLocalVue();
 // Добавляем к нему глобальный компонент AppIcon.
 localVue.component("AppInput", AppInput);
-localVue.component("SheetCard", SheetCard);
+localVue.component("AppCard", AppCard);
 localVue.component("AppButton", AppButton);
 // Добавляем в него Vuex.
 localVue.use(Vuex);
