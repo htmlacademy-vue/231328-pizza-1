@@ -1,36 +1,42 @@
-export const normalizeDough = (dough) => {
-  return dough.map((item) => ({
-    ...item,
-    value: item.name === "Тонкое" ? "light" : "large",
-    checked: item.name === "Толстое",
-  }));
+import resources from "@/common/resources";
+import {
+  AuthApiService,
+  CrudApiService,
+  BuilderApiService,
+  OrdersApiService,
+} from "@/services/api.service";
+
+// setAuth принимает store в качестве аргумента для того, чтобы задать
+// токен авторизации и вызвать действие для получения профиля пользователя.
+// isAuthenticated переводим в true в действии сразу же после получения данных о пользователе.
+export const setAuth = (store) => {
+  store.$api.auth.setAuthHeader();
+  store.dispatch("Auth/getMe");
 };
 
-export const normalizeSizes = (sizes) => {
-  return sizes.map((item) => ({
-    ...item,
-    value:
-      item.multiplier === 1
-        ? "small"
-        : item.multiplier === 2
-        ? "normal"
-        : "large",
-    checked: item.name === "32 см",
-  }));
-};
+/*
+ * Вернет объект, в нем объекты с методами для каждого вида api-данных
+ * Далее в vue/vuexPlugins.js мы их добавим в глобальную область видимости
+ *
+ * В resources мы храним названия api данных
+ *
+ * Например, в dough запишем объект с методами для получения размеров пиццы
+ * $api.dough
+ */
+export const createResources = () => {
+  return {
+    // Там class-функции, через new присваиваем копию (api.service.js)
+    [resources.DOUGH_API]: new BuilderApiService(resources.DOUGH_API),
+    [resources.INGREDIENTS_API]: new BuilderApiService(
+      resources.INGREDIENTS_API
+    ),
+    [resources.SAUCES_API]: new BuilderApiService(resources.SAUCES_API),
+    [resources.SIZES_API]: new BuilderApiService(resources.SIZES_API),
+    [resources.MISC_API]: new BuilderApiService(resources.MISC_API),
 
-export const normalizeSauces = (sizes) => {
-  return sizes.map((item) => ({
-    ...item,
-    value: item.name === "Томатный" ? "tomato" : "creamy",
-    checked: item.name === "Сливочный",
-  }));
-};
+    [resources.AUTH_API]: new AuthApiService(resources.AUTH_API),
 
-export const normalizeIngredients = (ingredients) => {
-  return ingredients.map((item) => ({
-    ...item,
-    value: item.image.split("/").pop().split(".", "1")[0],
-    count: 0,
-  }));
+    [resources.ORDERS_API]: new OrdersApiService(resources.ORDERS_API),
+    [resources.ADDRESSES_API]: new CrudApiService(resources.ADDRESSES_API),
+  };
 };

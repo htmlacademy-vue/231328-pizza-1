@@ -1,5 +1,5 @@
 <template>
-  <div class="sheet">
+  <div class="sheet" :class="className">
     <h2 class="title title--small sheet__title">
       <slot name="title" />
     </h2>
@@ -12,6 +12,12 @@
 <script>
 export default {
   name: "SheetCard",
+  props: {
+    className: {
+      type: String,
+      required: false,
+    },
+  },
 };
 </script>
 

@@ -1,17 +1,30 @@
 <template>
   <div class="content__constructor">
-    <AppDrop @drop="$emit('dropIngredient', $event)">
-      <div class="pizza" :class="pizzaFoundationClass">
+    <AppDrop @drop="setDroppedIngredient($event)" data-test="drop">
+      <!-- BuilderIsReady отслеживаем когда builder-vuex будет собран и нормализован,
+      тк используемые здесь геттрер-методы отрабатывают до того как builder-vuex будет готов к работе,
+      например, value еще не добавлен в хранилище с dought, но геттер-метод уже вызывается и просит value
+
+      TODO: чекнуть более изящное решение, это кажись говно
+       -->
+      <div
+        class="pizza"
+        :class="BuilderIsReady && pizzaFoundationClass"
+        data-test="pizza"
+      >
         <div class="pizza__wrapper">
-          <div
-            v-for="item in ingredients"
-            :key="item.id"
-            class="pizza__filling"
-            :class="[
-              getClassByIngredient(item.value),
-              getClassByCount(item.count),
-            ]"
-          ></div>
+          <transition-group name="ingredient">
+            <div
+              v-for="item in construct.ingredients"
+              :key="item.id"
+              class="pizza__filling"
+              :class="[
+                getClassByIngredient(item.id),
+                getClassByCount(item.quantity),
+              ]"
+              data-test="ingredient"
+            ></div>
+          </transition-group>
         </div>
       </div>
     </AppDrop>
@@ -20,36 +33,59 @@
 
 <script>
 import AppDrop from "@/common/components/AppDrop.vue";
+import { mapState, mapGetters, mapMutations } from "vuex";
+import { ADD_ENTITY, UPDATE_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "BuilderPizzaView",
   components: {
     AppDrop,
   },
-  props: {
-    dough: {
-      type: Number,
-      required: true,
-    },
-    sauce: {
-      type: Number,
-      required: true,
-    },
-    ingredients: {
-      type: Array,
-      required: true,
-    },
-  },
   computed: {
+    ...mapState("Builder", ["BuilderIsReady", "construct"]),
+    ...mapGetters(["getEntityById"]),
+
     pizzaFoundationClass() {
-      return `pizza--foundation--${this.dough == 1 ? "small" : "big"}-${
-        this.sauce == 1 ? "tomato" : "creamy"
-      }`;
+      let doughClass = this.construct.doughId === 1 ? "small" : "big";
+      let sauceClass = this.getEntityById(
+        "Builder.builder.sauces#value",
+        this.construct.sauceId
+      );
+      return `pizza--foundation--${doughClass}-${sauceClass}`;
     },
   },
   methods: {
-    getClassByIngredient(value) {
-      return `pizza__filling--${value}`;
+    ...mapMutations([ADD_ENTITY, UPDATE_ENTITY]),
+
+    setDroppedIngredient({ id }) {
+      let ingredientQuantity = this.getEntityById(
+        "Builder.construct.ingredients#quantity",
+        id
+      );
+      if (ingredientQuantity) {
+        this[UPDATE_ENTITY]({
+          path: "Builder.construct.ingredients",
+          value: {
+            id: id,
+            quantity: ingredientQuantity + 1,
+          },
+        });
+      } else {
+        this[ADD_ENTITY]({
+          path: "Builder.construct.ingredients",
+          value: {
+            id: id,
+            quantity: 1,
+          },
+        });
+      }
+    },
+
+    getClassByIngredient(id) {
+      return `pizza__filling--${this.getEntityById(
+        "Builder.builder.ingredients#value",
+        id
+      )}`;
     },
 
     getClassByCount(count) {
@@ -65,4 +101,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.ingredient-enter-active {
+  transition: all 0.5s;
+  transform: scale(1);
+}
+
+.ingredient-enter {
+  transform: scale(1.4);
+}
+</style>
