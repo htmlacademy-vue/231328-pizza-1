@@ -1,20 +1,19 @@
-/* eslint-disable */
 import router from "@/router";
 import { SET_ENTITY } from "@/store/mutation-types";
 
 const setupState = () => ({
-    userId: null,
-    phone: null,
-    isFormValid: false,
-    isPickup: false,
-    address: {
-      street: null,
-      building: null,
-      flat: null,
-      comment: null,
-    },
-    pizzas: [],
-    misc: [],
+  userId: null,
+  phone: null,
+  isFormValid: false,
+  isPickup: false,
+  address: {
+    street: null,
+    building: null,
+    flat: null,
+    comment: null,
+  },
+  pizzas: [],
+  misc: [],
 });
 
 export default {
@@ -46,7 +45,12 @@ export default {
       (ingredients) => {
         let arr = [];
         ingredients.forEach((ingredient) => {
-          arr.push(getEntityById("Builder.builder.ingredients#name", ingredient.ingredientId || ingredient.id));
+          arr.push(
+            getEntityById(
+              "Builder.builder.ingredients#name",
+              ingredient.ingredientId || ingredient.id
+            )
+          );
         });
         return arr.join(", ");
       },
@@ -119,7 +123,8 @@ export default {
           { root: true }
         );
         dispatch("query");
-        if (rootState.Auth.isAuthenticated) dispatch("Orders/query", "", { root: true });
+        if (rootState.Auth.isAuthenticated)
+          dispatch("Orders/query", "", { root: true });
         router.push("/success");
       } catch (error) {
         console.log(error);

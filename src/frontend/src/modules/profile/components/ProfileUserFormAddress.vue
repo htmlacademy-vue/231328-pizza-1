@@ -81,6 +81,17 @@ export default {
   // Здесь не используем стрелочную функцию потому что
   // присваивая userId, и обращаясь к this теряется контекст –
   // мы обращаемся уже к компоненту а не к хранилищу
+  props: {
+    formType: {
+      type: [String, Boolean],
+      required: true,
+    },
+
+    addressToEdit: {
+      type: Object,
+      required: false,
+    },
+  },
   data() {
     return {
       address: {
@@ -98,17 +109,6 @@ export default {
     if (this.addressToEdit) {
       this.address = Object.assign({}, this.addressToEdit);
     }
-  },
-  props: {
-    formType: {
-      type: [String, Boolean],
-      required: true,
-    },
-
-    addressToEdit: {
-      type: Object,
-      required: false,
-    },
   },
 };
 </script>
