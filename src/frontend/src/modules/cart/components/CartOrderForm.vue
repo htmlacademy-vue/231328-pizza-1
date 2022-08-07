@@ -163,12 +163,10 @@ export default {
         });
         return;
       }
-
       this[SET_ENTITY]({
         path: "Cart.isPickup",
         value: false,
       });
-
       if (this.getEntityById("Profile.addresses", target.value)) {
         this[SET_ENTITY]({
           path: "Cart.address",
@@ -180,12 +178,10 @@ export default {
         });
         return;
       }
-
       this[SET_ENTITY]({
         path: "Cart.isFormValid",
         value: false,
       });
-
       this.setupAddress();
     },
 
@@ -203,7 +199,6 @@ export default {
         });
         return;
       }
-
       this[SET_ENTITY]({
         path: "Cart.isFormValid",
         value: true,

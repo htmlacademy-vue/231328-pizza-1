@@ -1,9 +1,9 @@
 <template>
   <div class="content__dough">
-    <SheetCard>
+    <AppCard>
       <template #title>Выберите тесто</template>
       <template #content>
-        <SelectorItem
+        <AppSelector
           v-for="item of builder.dough"
           :key="item.id"
           :id="item.id"
@@ -18,19 +18,19 @@
           @onChange="setDough(item.id)"
         />
       </template>
-    </SheetCard>
+    </AppCard>
   </div>
 </template>
 
 <script>
-import SelectorItem from "@/common/components/SelectorItem";
+import AppSelector from "@/common/components/AppSelector";
 import { mapState, mapMutations } from "vuex";
 import { SET_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "BuilderDoughSelector",
   components: {
-    SelectorItem,
+    AppSelector,
   },
   computed: {
     ...mapState("Builder", ["builder", "construct"]),

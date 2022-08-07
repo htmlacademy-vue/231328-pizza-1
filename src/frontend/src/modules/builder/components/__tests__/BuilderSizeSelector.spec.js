@@ -2,10 +2,10 @@ import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "Vuex";
 import { generateMockStore, createBuilder } from "@/store/mocks";
 import BuilderSizeSelector from "@/modules/builder/components/BuilderSizeSelector";
-import SheetCard from "@/common/components/SheetCard";
+import AppCard from "@/common/components/AppCard";
 
 const localVue = createLocalVue();
-localVue.component("SheetCard", SheetCard);
+localVue.component("AppCard", AppCard);
 localVue.use(Vuex);
 
 describe("BuilderSizeSelector", () => {

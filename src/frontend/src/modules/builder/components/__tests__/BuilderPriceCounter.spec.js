@@ -2,12 +2,12 @@ import { mount, createLocalVue } from "@vue/test-utils";
 import Vuex from "vuex";
 import { generateMockStore, createBuilder } from "@/store/mocks";
 import { ADD_ENTITY } from "@/store/mutation-types";
-import SheetCard from "@/common/components/SheetCard.vue";
+import AppCard from "@/common/components/AppCard.vue";
 import AppButton from "@/common/components/AppButton.vue";
 import BuilderPriceCounter from "@/modules/builder/components/BuilderPriceCounter";
 
 const localVue = createLocalVue();
-localVue.component("SheetCard", SheetCard);
+localVue.component("AppCard", AppCard);
 localVue.component("AppButton", AppButton);
 localVue.use(Vuex);
 

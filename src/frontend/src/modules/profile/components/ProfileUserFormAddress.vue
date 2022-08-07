@@ -104,6 +104,7 @@ export default {
       type: [String, Boolean],
       required: true,
     },
+
     addressToEdit: {
       type: Object,
       required: false,

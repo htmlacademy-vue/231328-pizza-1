@@ -43,17 +43,6 @@ export default {
   }),
   methods: {
     async login() {
-      // Если есть невалидное поле - не отправлять запрос на сервер.
-      // Также в миксине мы присваиваем текст ошибки
-      // if (
-      //   !this.$validateFields(
-      //     { email: this.email, password: this.password },
-      //     this.validations
-      //   )
-      // ) {
-      //   return;
-      // }
-      // Если поля валидны - отправляем запрос на сервер.
       await this.$store.dispatch("Auth/login", {
         email: this.email,
         password: this.password,

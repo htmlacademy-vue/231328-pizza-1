@@ -121,12 +121,8 @@ export default {
   computed: {
     ...mapState("Orders", ["orders"]),
     ...mapGetters(["getEntityById"]),
-    ...mapGetters("Builder", ["getIngredientsPrice", "getPizzaPrice"]),
-    ...mapGetters("Cart", [
-      "getPizzasPrice",
-      "getMiscPrice",
-      "getIngredientsList",
-    ]),
+    ...mapGetters("Builder", ["getPizzaPrice"]),
+    ...mapGetters("Cart", ["getPizzasPrice", "getIngredientsList"]),
   },
   methods: {
     ...mapMutations([SET_ENTITY]),
@@ -136,7 +132,6 @@ export default {
 
     getTotalPrice(pizzas, misc) {
       let arr = 0;
-
       if (misc) {
         arr = misc.reduce((acc, curr) => {
           return (
@@ -145,7 +140,6 @@ export default {
           );
         }, 0);
       }
-
       return this.getPizzasPrice(pizzas) + arr;
     },
 
@@ -154,12 +148,10 @@ export default {
         path: "Cart.pizzas",
         value: order.orderPizzas,
       });
-
       this[SET_ENTITY]({
         path: "Cart.address",
         value: order.orderAddress,
       });
-
       router.push("/cart");
     },
 

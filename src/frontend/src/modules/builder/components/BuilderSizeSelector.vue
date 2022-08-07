@@ -1,9 +1,9 @@
 <template>
   <div class="content__diameter">
-    <SheetCard>
+    <AppCard>
       <template #title>Выберите размер</template>
       <template #content>
-        <SelectorItem
+        <AppSelector
           v-for="item of builder.sizes"
           :key="item.id"
           :title="item.name"
@@ -16,19 +16,19 @@
           @onChange="setSize(item.id)"
         />
       </template>
-    </SheetCard>
+    </AppCard>
   </div>
 </template>
 
 <script>
-import SelectorItem from "@/common/components/SelectorItem";
+import AppSelector from "@/common/components/AppSelector";
 import { mapState, mapMutations } from "vuex";
 import { SET_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "BuilderSizeSelector",
   components: {
-    SelectorItem,
+    AppSelector,
   },
   computed: {
     ...mapState("Builder", ["builder", "construct"]),

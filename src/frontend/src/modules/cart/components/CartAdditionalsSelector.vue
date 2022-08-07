@@ -13,7 +13,7 @@
         </p>
 
         <div class="additional-list__wrapper">
-          <ItemCounter
+          <AppCounter
             :name="item.value"
             :count="item.quantity || 0"
             :min="0"
@@ -33,14 +33,14 @@
 </template>
 
 <script>
-import ItemCounter from "@/common/components/ItemCounter";
+import AppCounter from "@/common/components/AppCounter";
 import { mapState, mapMutations } from "vuex";
 import { UPDATE_ENTITY } from "@/store/mutation-types";
 
 export default {
   name: "CartAdditionalsSelector",
   components: {
-    ItemCounter,
+    AppCounter,
   },
   computed: {
     ...mapState("Cart", ["misc"]),

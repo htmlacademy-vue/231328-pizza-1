@@ -3,10 +3,10 @@ import Vuex from "vuex";
 import { generateMockStore, createBuilder } from "@/store/mocks";
 import { SET_ENTITY } from "@/store/mutation-types";
 import BuilderDoughSelector from "@/modules/builder/components/BuilderDoughSelector";
-import SheetCard from "@/common/components/SheetCard";
+import AppCard from "@/common/components/AppCard";
 
 const localVue = createLocalVue();
-localVue.component("SheetCard", SheetCard);
+localVue.component("AppCard", AppCard);
 localVue.use(Vuex);
 
 describe("BuilderDoughSelector", () => {

@@ -1,11 +1,11 @@
 <template>
   <div class="content__ingredients">
-    <SheetCard>
+    <AppCard>
       <template #title>Выберите ингредиенты</template>
       <template #content>
         <div class="ingredients__sauce">
           <p>Основной соус:</p>
-          <RadioButton
+          <AppRadio
             v-for="item of builder.sauces"
             :key="item.id"
             :title="item.name"
@@ -36,7 +36,7 @@
                   {{ item.name }}
                 </span>
               </AppDrag>
-              <ItemCounter
+              <AppCounter
                 :name="item.value"
                 :count="getCount(item.id) || 0"
                 :min="MIN_INGREDIENT_QUANTITY"
@@ -49,13 +49,13 @@
           </ul>
         </div>
       </template>
-    </SheetCard>
+    </AppCard>
   </div>
 </template>
 
 <script>
-import RadioButton from "@/common/components/RadioButton";
-import ItemCounter from "@/common/components/ItemCounter";
+import AppRadio from "@/common/components/AppRadio";
+import AppCounter from "@/common/components/AppCounter";
 import AppDrag from "@/common/components/AppDrag";
 import {
   MIN_INGREDIENT_QUANTITY,
@@ -72,8 +72,8 @@ import {
 export default {
   name: "BuilderSizeSelector",
   components: {
-    RadioButton,
-    ItemCounter,
+    AppRadio,
+    AppCounter,
     AppDrag,
   },
   data: () => ({
@@ -82,7 +82,7 @@ export default {
   }),
   computed: {
     ...mapState("Builder", ["builder", "construct"]),
-    ...mapGetters(["getEntityById", "getAttrById"]),
+    ...mapGetters(["getEntityById"]),
   },
   methods: {
     ...mapMutations([SET_ENTITY, ADD_ENTITY, UPDATE_ENTITY, DELETE_ENTITY]),
