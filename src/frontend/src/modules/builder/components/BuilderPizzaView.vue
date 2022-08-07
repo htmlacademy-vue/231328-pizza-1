@@ -23,7 +23,7 @@
                 getClassByCount(item.quantity),
               ]"
               data-test="ingredient"
-            ></div>
+            />
           </transition-group>
         </div>
       </div>
