@@ -4,7 +4,7 @@ export default {
   namespaced: true,
   state: {
     isAuthenticated: false,
-    user: null,
+    user: [],
   },
   getters: {
     // геттер-функция для получения параметра по его названию из объекта user

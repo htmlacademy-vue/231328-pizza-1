@@ -28,19 +28,7 @@ export default {
       sizes: [],
     },
     construct: {
-      // ...setupConstructState(),
-      id: "1",
-      name: "Пицца «Четыре сыра»",
-      doughId: DEFAULT_DOUGH_ID,
-      sauceId: DEFAULT_SAUCE_ID,
-      sizeId: DEFAULT_SIZE_ID,
-      ingredients: [
-        { id: 2, quantity: 1 },
-        { id: 6, quantity: 1 },
-        { id: 5, quantity: 1 },
-        { id: 7, quantity: 1 },
-      ],
-      quantity: 1,
+      ...setupConstructState(),
     },
   },
   getters: {

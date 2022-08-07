@@ -1,13 +1,17 @@
 <template>
   <div class="content__constructor">
-    <AppDrop @drop="setDroppedIngredient($event)">
+    <AppDrop @drop="setDroppedIngredient($event)" data-test="drop">
       <!-- BuilderIsReady отслеживаем когда builder-vuex будет собран и нормализован,
       тк используемые здесь геттрер-методы отрабатывают до того как builder-vuex будет готов к работе,
       например, value еще не добавлен в хранилище с dought, но геттер-метод уже вызывается и просит value
 
       TODO: чекнуть более изящное решение, это кажись говно
        -->
-      <div class="pizza" :class="BuilderIsReady && pizzaFoundationClass">
+      <div
+        class="pizza"
+        :class="BuilderIsReady && pizzaFoundationClass"
+        data-test="pizza"
+      >
         <div class="pizza__wrapper">
           <transition-group name="ingredient">
             <div
@@ -18,6 +22,7 @@
                 getClassByIngredient(item.id),
                 getClassByCount(item.quantity),
               ]"
+              data-test="ingredient"
             ></div>
           </transition-group>
         </div>

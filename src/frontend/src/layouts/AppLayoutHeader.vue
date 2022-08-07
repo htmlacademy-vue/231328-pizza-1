@@ -11,7 +11,9 @@
       </router-link>
     </div>
     <div class="header__cart">
-      <router-link to="cart">{{ isEmpty ? 0 : totalPrice }} ₽</router-link>
+      <router-link to="cart" data-test="cart-route"
+        >{{ isEmpty ? 0 : totalPrice }} ₽</router-link
+      >
     </div>
     <div class="header__user">
       <template v-if="isAuthenticated">
@@ -45,11 +47,17 @@
           class="header__logout"
           to="/"
           @click.native="logout()"
+          data-test="logout-route"
         >
           <span>Выйти</span>
         </router-link>
       </template>
-      <router-link v-else class="header__login" to="login">
+      <router-link
+        v-else
+        class="header__login"
+        to="login"
+        data-test="login-route"
+      >
         <span>Войти</span>
       </router-link>
     </div>

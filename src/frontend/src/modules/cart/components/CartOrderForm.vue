@@ -8,6 +8,7 @@
           class="select"
           v-model="deliveryType"
           @change="setDelivery($event)"
+          data-test="delivery-select"
         >
           <option :value="false">Заберу сам</option>
           <option :value="true">Новый адрес</option>
@@ -15,6 +16,7 @@
             v-for="address of addresses"
             :key="address.id"
             :value="address.id"
+            data-test="delivery-option"
           >
             {{ address.name }}
           </option>
@@ -28,7 +30,7 @@
         v-model="phone"
       />
       <div class="cart-form__address" v-show="deliveryType">
-        <span class="cart-form__label">{{
+        <span class="cart-form__label" data-test="address-label">{{
           Number.isInteger(deliveryType) ? "Доставим сюда:" : "Новый адрес:"
         }}</span>
 
@@ -38,6 +40,7 @@
             name="street"
             :disabled="Number.isInteger(deliveryType)"
             v-model="street"
+            data-test="address-input"
             @input="validateAddress()"
           />
         </div>
@@ -48,6 +51,7 @@
             name="house"
             :disabled="Number.isInteger(deliveryType)"
             v-model="house"
+            data-text="address-input"
             @input="validateAddress()"
           />
         </div>
@@ -58,6 +62,7 @@
             name="apartment"
             :disabled="Number.isInteger(deliveryType)"
             v-model="apartment"
+            data-text="address-input"
             @input="validateAddress()"
           />
         </div>
@@ -93,7 +98,6 @@ export default {
     ...mapState("Profile", ["addresses"]),
     ...mapState("Cart", ["address"]),
     ...mapGetters(["getEntityById"]),
-    ...mapGetters("Profile", ["getAddressById"]),
 
     phone: {
       get() {

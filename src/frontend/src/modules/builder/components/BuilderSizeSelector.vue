@@ -12,6 +12,7 @@
           :checked="construct.sizeId === item.id"
           class="diameter__input"
           :class="`diameter__input--${item.value}`"
+          data-test="size-item"
           @onChange="setSize(item.id)"
         />
       </template>
@@ -36,7 +37,6 @@ export default {
     ...mapMutations([SET_ENTITY]),
 
     setSize(id) {
-      console.log();
       this[SET_ENTITY]({
         path: "Builder.construct.sizeId",
         value: id,

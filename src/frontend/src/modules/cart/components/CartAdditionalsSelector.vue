@@ -5,10 +5,11 @@
         class="additional-list__item sheet"
         v-for="(item, index) of misc"
         :key="index"
+        data-test="misc-item"
       >
         <p class="additional-list__description">
           <img :src="item.image" width="39" height="60" :alt="item.name" />
-          <span>{{ item.name }}</span>
+          <span data-test="misc-item-name">{{ item.name }}</span>
         </p>
 
         <div class="additional-list__wrapper">
@@ -18,11 +19,12 @@
             :min="0"
             :max="99"
             class="cart-list__counter"
+            data-test="misc-item-counter"
             @update:count="updateMisc(item, $event)"
           />
 
           <div class="additional-list__price">
-            <b>× {{ item.price }} ₽</b>
+            <b data-test="misc-item-price">× {{ item.price }} ₽</b>
           </div>
         </div>
       </li>

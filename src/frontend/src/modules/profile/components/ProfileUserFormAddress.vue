@@ -5,7 +5,7 @@
       @submit.prevent="$emit('onSave', address)"
     >
       <div class="address-form__header">
-        <b>{{ address.name || "Новый адрес" }}</b>
+        <b data-test="address-name">{{ address.name || "Новый адрес" }}</b>
       </div>
 
       <div class="address-form__wrapper">
@@ -64,6 +64,7 @@
           v-if="formType !== 'post'"
           type="button"
           class="button button--transparent"
+          data-test="address-delete"
           @click="$emit('onDelete', address.id)"
         >
           Удалить

@@ -10,9 +10,9 @@
           :alt="pizza.name"
         />
         <div class="product__text">
-          <h2>{{ pizza.name }}</h2>
+          <h2 data-test="pizza-name">{{ pizza.name }}</h2>
           <ul>
-            <li>
+            <li data-test="pizza-size-dough">
               {{ getEntityById("Builder.builder.sizes#name", pizza.sizeId) }},
               {{
                 getEntityById(
@@ -21,11 +21,13 @@
                 )
               }}
             </li>
-            <li>
+            <li data-test="pizza-sauce">
               Соус:
               {{ getEntityById("Builder.builder.sauces#name", pizza.sauceId) }}
             </li>
-            <li>Начинка: {{ getIngredientsList(pizza.ingredients) }}</li>
+            <li data-test="pizza-ingredients">
+              Начинка: {{ getIngredientsList(pizza.ingredients) }}
+            </li>
           </ul>
         </div>
       </div>
